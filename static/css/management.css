@@ -1,0 +1,90 @@
+.step-group {
+    height: 40px;
+    position:relative;
+    text-align:center;
+}
+
+.step-name {
+    padding-top:10px;
+    font-weight:700;
+    text-align:center;
+    
+    
+}
+
+.step {
+    padding:10px;
+    
+}
+
+
+.step::before {
+    content:'';
+    width: 20px;
+    height: 20px;
+    border-radius:50%;
+    background:#ccc;
+    text-align:center;
+    top: -5px;
+    left: 45%;
+    position:absolute;
+}
+
+.step::after {
+    content:'';
+    height:10px;
+    width:100%;
+    background:#ccc;
+    position:absolute;
+    left:0;
+    top:00%;
+}
+
+.step-group:last-child .step::after  {
+    width:50%;
+    left:0;
+}
+
+.step-group:first-child .step::after  {
+    width:50%;
+    left:50%;
+}        
+
+.step-done {
+    padding:10px;
+    
+}
+
+
+.step-done::before {
+    content:'';
+    width: 20px;
+    height: 20px;
+    border-radius:50%;
+    background:#03cea4;
+    text-align:center;
+    top: -5px;
+    left: 45%;
+    position:absolute;
+}
+
+.step-done::after {
+    content:'';
+    height:10px;
+    width:100%;
+    background:#03cea4;
+    position:absolute;
+    left:0;
+    top:0%;
+    
+}
+
+.step-group:last-child .step-done::after  {
+    width:50%;
+    left:0;
+}
+
+.step-group:first-child .step-done::after  {
+    width:50%;
+    left:50%;
+}        

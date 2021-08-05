@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{% url 'core:home' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="col-md-9 ms-sm-auto col-lg-10 col-xl-12">
+      <h1>Criar Usuário</h1>
+      {% include 'partials/messages.html' %}
+      <div class="col-8">
+        <div class="card">
+          <div class="card-body">
+            <form method="POST" action=".">
+                {% csrf_token %}
+                <div class="row row-flex justify-content-center">
+                    <div class="form-group col-6" >
+                        <label for="{{ follower.username.id_for_label }}" class="form-label">COLABORADOR</label>
+                        {{ form.follower|add_class:"form-control" }}
+                        {% if form.follower != 0 %} 
+                          {{ form.follower__occupation }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="{{ leader.username.id_for_label }}" class="form-label">LÍDER</label>
+                        {{ user }}
+                        {{ user.user__first_name|add_class:"form-control" }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ leader.username.id_for_label }}" class="form-label">ASSUNTOS ABORDADOS</label>
+                    <div class="row row-flex mb-2 justify-content-fill">
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_one.id_for_label }}" class="col-11">
+                            {{ form.subject_one | add_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="row row-flex mb-2 justify-content-fill">
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_one.id_for_label }}" class="col-11">
+                            {{ form.subject_one | add_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="row row-flex mb-2 justify-content-fill">
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_two.id_for_label }}"  class="col-11">
+                            {{ form.subject_two | add_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="row row-flex mb-2 justify-content-fill" >
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_three.id_for_label }}"  class="col-11">
+                            {{ form.subject_three | add_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="row row-flex mb-2 justify-content-fill">
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_four.id_for_label }}"  class="col-11">
+                            {{ form.subject_four | add_class:"form-control"}}
+                        </div>
+                    </div>
+                    <div class="row row-flex mb-2 justify-content-fill">
+                        <div class="col-1">
+                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
+                        </div>
+                        <div for="{{ form.subject_five.id_for_label }}"  class="col-11">
+                            {{ form.subject_five | add_class:"form-control"}}
+                        </div>
+                    </div>
+                </div>
+              <div class="row justify-content-between">
+                <div class="col-4 row">
+                    <div for="{{ form.date.id_for_label }}" class="date col-6" >
+                        {{ form.next_meeting_date | add_class:"form-control"  }}
+                    </div>
+                    <div for="{{ form.frequency.id_for_label }}"class="date col-6">
+                        {{ form.meetings_frequency | add_class:"form-control" }}
+                    </div>
+                </div>
+                <div class="row col-8 justify-content-end mr-1">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock main %}
+{% block footer %}
+{% endblock footer %}

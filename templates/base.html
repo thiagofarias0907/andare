@@ -1,0 +1,223 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{% static '/bootstrap/dist/css/bootstrap.css' %}"/>
+        <link rel="stylesheet" href="{% static '/css/base.css' %}"/>
+
+
+
+        <script src="{% static '/js/jquery-3.5.1.min.js' %}"></script>
+        <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src="{% static '/js/jquery.formset.js' %}"></script>
+
+        <script src="https://kit.fontawesome.com/38a3db8ee8.js" crossorigin="anonymous"></script>
+
+        <meta charset="UTF-8">
+        {% block head %}
+        {% endblock head %}
+
+        <title>{% block title %} Andare {% endblock title %}</title>
+    </head>
+
+    <body>
+        {% block body %}
+        <div class="container-fluid vh-100 d-flex flex-column" >
+            <div class="row flex-grow-1">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block navbar-light bg-light sidebar collapse">
+                  <div class="container-fluid justify-content-md-center">
+                      <a class="navbar-brand" href="/">
+                          <img src="{% static '/img/logo.png' %}" alt="Andare" width="100%" height="100%">
+                      </a>
+                  </div>
+                  {% block navlink %}
+                  <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                      <li class="nav-item">
+                        <a class="nav-link active"   href="/">
+                          <span data-feather="home"></span>
+                          INÍCIO
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link"  href="{% url 'core:home' %}">
+                          <span data-feather="home"></span>
+                          EVENTOS
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">
+                          <span data-feather="file"></span>
+                          CARGOS E CARREIRAS
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">
+                          <span data-feather="file"></span>
+                          EQUIPE
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">
+                          <span data-feather="file"></span>
+                          RELATÓRIOS
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">
+                          <span data-feather="file"></span>
+                          CONFIGURAÇÃO
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:add_user' %}">
+                          <span data-feather="file"></span>
+                          CONTROLE DE ACESSOS
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  {%endblock navlink%}
+                </nav>
+                <main class=" col-sm-6 col-md-9 ms-sm-auto col-lg-10 px-md-4 position-relative">
+                    <div class="container col-sm-6 col-md-9 ms-sm-auto col-lg-12 p-1">
+                      <div class="row justify-content-end align-items-center" >
+                          {% if user.is_authenticated %}
+                            <div class="profile-container">
+                                {% if user.user_profile.picture %}
+                                    <a href="{% url 'accounts:change_profile' %} ">
+                                        <img src="{{ user.user_profile.picture.url }}" alt="profile_pic">
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'accounts:update_profile' user.username %} ">
+                                        <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
+                                    </a>
+                                {% endif %}
+                                </a>
+                            </div>
+                            <div  class="align-items-center">
+                                <div >
+                                    <strong>{{ user.get_full_name|default:user.username }}</strong>
+                                </div>
+                                <div style="font-size:9pt; margin-top:-4px;">
+                                    <a href="{% url 'accounts:user_logout' %}">Sair</a>
+                                     | <a href="{% url 'accounts:profile' user.username %}">Meu Perfil</a>
+                                </div>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    {% block main %}
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <div class="col-md-8">
+                            <h1>Olá, {{ user.first_name }} </h1>
+                            <H2>Seja bem vindo(a)</H2>
+                        </div>                   
+                    </div>
+                    <div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-start pt-3 pb-2 mb-3 border-bottom">
+                      <div class="row">
+                        <div class="card  m-2 p-2 col-lg-6" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="fas fa-info-circle"></i> Sobre o projeto
+                                </h5>
+                                <p class="card-text">
+                                    Este projeto tem como objetivo ofecerer a líderes o acompanhamento de reuniões e desenvolvimento de seus colaboradores.
+                                </p>
+                            </div>
+                        </div>                        
+                        {% comment %} <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Projetos ativos
+                                </h5>
+                                <p class="card-text">
+                                  <h1><i class="fas fa-play-circle"></i>  {{active_projects}} </h1>
+                                </p>
+                            </div>
+                        </div>                        
+                        <div class="card  m-2 p-2 col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Projetos Concluídos
+                                </h5>
+                                <p class="card-text">
+                                  <h1><i class="fas fa-check-circle"></i>  {{done_projects}} </h1>
+                                </p>
+                            </div>
+                        </div>                        
+                        <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Projetos Inativos
+                                </h5>
+                                <p class="card-text">
+                                  <h1 ><i class="fas fa-ban"></i>  {{inactive_projects}} </h1>
+                                </p>
+                            </div>
+                        </div>                        
+                        <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Metodologias
+                                </h5>
+                                <p class="card-text ">
+                                  <h1 ><i class="fas fa-list-ol"></i>  {{ methodologies  }}</h1>
+                                </p>
+                            </div>
+                        </div>                         {% endcomment %}
+                        <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Usuários
+                                </h5>
+                                <p class="card-text ">
+                                  <h1 > <i class="fas fa-user-circle"></i> {{ users  }}</h1>
+                                </p>
+                            </div>
+                        </div>                        
+                        <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Equipe
+                                </h5>
+                                <p class="card-text ">
+                                  <h1 ><i class="fas fa-users"></i> {{ team  }}</h1>
+                                </p>
+                            </div>
+                        </div>  
+                      </div>                             
+                    </div>                    
+                    {% endblock main %}
+                </main>
+            </div>
+        </div>
+
+        {% endblock body %}
+
+        
+
+
+        {% block footer %}
+            <script>
+                $(document).on('click', '.confirm-delete', function(){
+                    $('#confirmDeleteModal').attr('caller-id', $(this).attr('id'));
+                });
+                $(document).on('click', '#confirmDeleteButtonModal', function(){
+                    var caller = $('#confirmDeleteButtonModal').closest('.modal').attr('caller-id');
+                    window.location = $('#'.concat(caller)).attr('href');
+                });
+                var myModalEl = document.getElementById('confirmDeleteModal')
+                myModalEl.addEventListener('hidden.bs.modal', function (event) {
+                  myModal.dispose()
+                })
+
+            </script>
+
+        {% endblock footer %}
+
+    </body>
+
+
+</html>

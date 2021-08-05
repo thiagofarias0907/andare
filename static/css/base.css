@@ -1,0 +1,90 @@
+.profile-container {
+    border:0;
+    border:solid;
+    border-color:transparent;
+    border-radius: 50%;
+    overflow:hidden;
+    padding: 0px;
+    width: 45px;
+    height: 45px;
+    position: relative
+}
+.profile-container-lg {
+    border:0;
+    border:solid;
+    border-color:transparent;
+    border-radius: 25%;
+    overflow:hidden;
+    padding: 0px;
+    width: 100px;
+    height: 100px;
+    position: relative
+}
+.profile-container img {
+    height: 100%;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+}
+.profile-container-lg img {
+    height: 100%;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+}
+.profile-container-squared {
+    border:0;
+    border:solid;
+    border-color:transparent;
+    border-radius: 10%;
+    overflow:hidden;
+    padding: 0px;
+    width: 80px;
+    height: 80px;
+    position: relative
+}
+
+.profile-container-squared img {
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.sidebar .nav-link {
+    overflow:hidden;
+    padding: 10px;
+    color:#7D85DE;
+    font-weight: 700;
+
+}
+
+.sidebar .nav-link:hover {
+    width:100%;
+    color:#7D85DE;
+    background-color:#EEEEEE;
+    background: linear-gradient(60deg, #f8f9fa  0%, #f8f9fa  10%, #E9AFB2 10.5% , #E9AFB2 20.5% , #f8f9fa  21%, #f8f9fa  100% );
+    background: linear-gradient(60deg,#f8f9fa 0% , #f8f9fa 70.5% , #7D85DE 71%, #7D85DE 100% );
+}
+
+.sidebar .active {
+    color: #FFFFFF;
+    border:0;
+    border-color:#FFFFFF;
+    background: linear-gradient(60deg,#7D85DE 0% , #7D85DE 50.5% , #E9AFB2 51%, #E9AFB2 100% );
+    overflow:visible;
+    padding: 10px;
+    width:100%;
+}

@@ -1,0 +1,43 @@
+.brand {
+ background: linear-gradient(0deg,#8F85FF 0% , #8F85FF 60% , #FAFAFA 60%, #FAFAFA 100% );
+ /* background-color: #CBB1FB;
+ background-color: #8F85FF;
+ background-color: #E9AFB2;
+ background-color: #D4D2D5;
+ background-color: #707070;     */
+}
+/* .content {
+    background-color: #8F85FF;
+     background-color: #CBB1FB;
+     background-color: #7D85DE;
+    background-color: #8F85FF;
+    background-color: #E9AFB2;
+    background-color: #D4D2D5;
+    background-color: #707070;     
+   } */
+.form {
+    margin-top: 10vh;
+    background-color: #FAFAFA;
+    border-radius: 3%;
+    border-color: #D4D2D5;
+    border-width: 0 0 3pt 0 ;
+    border-style: solid;
+    color: #7D85DE;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1rem;
+} 
+
+button {
+    margin-right: 15px;
+    background-color: #8F85FF;
+}
+
+button:hover{
+    background-color: #7D85DE;
+}
+
+label {
+    margin-top: 0.5vh;
+    margin-bottom: 0;
+}

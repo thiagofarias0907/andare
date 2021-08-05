@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+
+    <title>Insira seus dados para acessar Slope</title>
+
+    <link href="{% static '/bootstrap/dist/css/signin.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/bootstrap/dist/css/bootstrap.css' %}"/>
+    <link href="{% static '/css/login.css' %}" rel="stylesheet">
+  </head>
+
+  <body class="brand">
+    <div class="container row row-flex  text-center justify-content-center">
+      <div class="col-lg-12 col-sm-12">
+          <img src="{% static '/img/logo.png' %}" alt="Andare"></a>
+      </div>
+      <div class="form col-lg-4 col-md-6 col-sm-12">
+        <form class="form-signin" method="POST" action=".">
+          {% csrf_token %}
+          <h1 class="h4 mt-4">INSIRA SEUS DADOS</h1>
+          <hr>
+          {% include 'partials/messages.html' %}
+          <label for="userInput" class="">USUÁRIO</label>
+          <input type="text" id="userInput" name="username" class="form-control" placeholder="Nome de usuário" required autofocus>
+          <label for="passInput" class="">SENHA</label>
+          <input type="password" id="passInput" name="password" class="form-control" placeholder="Senha" required>
+          <div class = "row justify-content-end  mb-3">
+            <button class="btn btn-lg btn-primary" type="submit">Entrar</button>
+          </div>
+          <p class="mt-2 mb-3 text-muted text-center">&copy; 2021</p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

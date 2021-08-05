@@ -1,0 +1,23 @@
+<!-- Button trigger modal -->
+<!--<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">-->
+<!--  Excluir arquivo-->
+<!--</button>-->
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" caller-id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Exclusão de Registro</h5>
+        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body confirm-delete">
+        Esta ação é definitiva! Tem certeza que deseja exluir o registro?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteButtonModal">Exluir Registro</button>
+      </div>
+    </div>
+  </div>
+</div>
