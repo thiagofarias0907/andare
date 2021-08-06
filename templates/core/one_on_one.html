@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% load widget_tweaks %}
-
+{% load static %}
 {% block navlink %}
 <div class="position-sticky pt-3">
   <ul class="nav flex-column">
@@ -51,11 +51,14 @@
 </div>
 {%endblock navlink%}
 {% block main %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
-  <div class="col-md-9 ms-sm-auto col-lg-10 col-xl-12">
-      <h1>Criar Usuário</h1>
+<div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="row justify-content-center col-md-9 ms-sm-auto col-lg-10 col-xl-12">
+      <div class="col-12 mb-5">
+        <h1>Registrar Reunião 1:1</h1>
+        
       {% include 'partials/messages.html' %}
-      <div class="col-8">
+      </div>
+      <div class="col-9">
         <div class="card">
           <div class="card-body">
             <form method="POST" action=".">
@@ -68,22 +71,32 @@
                           {{ form.follower__occupation }}
                         {% endif %}
                     </div>
-                    <div class="form-group col-6">
-                        <label for="{{ leader.username.id_for_label }}" class="form-label">LÍDER</label>
-                        {{ user }}
-                        {{ user.user__first_name|add_class:"form-control" }}
+                    <div class="col-6 row justify-content-start">
+                      <div class="col-12">
+                       <label for="{{ leader.username.id_for_label }}" class="form-label">LÍDER</label>
+                      </div>
+                      <div class="col-3">
+                        <div class="profile-container-squared">
+                          {% if user.user_profile.picture %}
+                              <a href="{% url 'accounts:change_profile' %} ">
+                                  <img src="{{ user.user_profile.picture.url }}" alt="profile_pic">
+                              </a>
+                          {% else %}
+                              <a href="{% url 'accounts:update_profile' user.username %} ">
+                                  <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
+                              </a>
+                          {% endif %}
+                            </a>
+                        </div>
+                      </div>
+                      <div class=" col-auto">
+                        <span style="font-size:2em">{{ user.first_name }} </span>
+                        <br>{{ user.last_name }}
+                      </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="{{ leader.username.id_for_label }}" class="form-label">ASSUNTOS ABORDADOS</label>
-                    <div class="row row-flex mb-2 justify-content-fill">
-                        <div class="col-1">
-                            <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
-                        </div>
-                        <div for="{{ form.subject_one.id_for_label }}" class="col-11">
-                            {{ form.subject_one | add_class:"form-control"}}
-                        </div>
-                    </div>
                     <div class="row row-flex mb-2 justify-content-fill">
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>

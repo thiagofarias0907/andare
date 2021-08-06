@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
+
 .profile-container {
     border:0;
     border:solid;
@@ -5,8 +7,8 @@
     border-radius: 50%;
     overflow:hidden;
     padding: 0px;
-    width: 45px;
-    height: 45px;
+    width: 100px;
+    height: 100px;
     position: relative
 }
 .profile-container-lg {
@@ -16,8 +18,8 @@
     border-radius: 25%;
     overflow:hidden;
     padding: 0px;
-    width: 100px;
-    height: 100px;
+    width: 160px;
+    height: 160px;
     position: relative
 }
 .profile-container img {
@@ -88,3 +90,84 @@
     padding: 10px;
     width:100%;
 }
+
+a {
+   color: #E9AFB2; 
+   font-weight: 700;
+}
+a:hover {
+   color: #E9AFB2; 
+   font-weight: 900;
+}
+
+.rounded-square {
+   height: 50px; 
+   width: 50px; 
+   border-radius: 10%;
+   text-align: center;
+   background-color: #E9AFB2;
+   margin: 2px;
+   color: #f8f9fa;
+   font-weight: 900;
+}
+
+.rounded-square.secondary {
+   background-color: #CBB1FB;
+}
+
+.rounded-square.highlight {
+   background-color:#8F85FF;
+}
+.rounded-square.dark {
+   background-color:#707070;
+}
+
+.right-bar{
+   color: #707070;
+}
+
+.right-bar .title{
+   color: #E9AFB2; 
+   font-weight: 700;
+   font-size: 1em;
+   text-transform: uppercase;
+}
+
+.right-bar label {
+    font-weight: 800;
+    font-size: 1em;
+    text-transform: capitalize;
+    color: #E9AFB2; 
+    margin: 0;
+    line-height: 1;
+}
+
+.right-bar .career{
+   margin-top: 3vh; 
+   margin-bottom: 3vh;
+   font-size: 0.8em;
+   line-height: 0.9;
+}
+.career label {
+    font-weight: 800;
+    font-size: 1em;
+    text-transform: capitalize;
+    color: #E9AFB2; 
+    margin: 0;
+    line-height: 1;
+}
+.right-bar .events{
+    color: #CBB1FB; 
+}
+.events .title{
+    text-transform: uppercase;
+    color: #CBB1FB; 
+}
+.events label {
+    
+    color: #CBB1FB; 
+}
+
+.events .rounded-square  {
+    background-color:#CBB1FB;
+ }

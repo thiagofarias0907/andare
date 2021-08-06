@@ -4,19 +4,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
 
-from .models import PdiPlan, PdiMeeting, ActionPlan, UserProfile
+from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile
 from .forms import OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm
 
 @login_required(login_url='/accounts/login/')
 def home(request):
     template = 'base.html'
     context = {}
+    leader   = UserProfile.objects.get(user=request.user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
     return render(request, template_name=template, context=context)
 
 def one_on_one(request):
     template = 'core/one_on_one.html'
     context = {}
     leader   = UserProfile.objects.get(user=request.user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
     if (request.method == 'POST'):     
         form = OneOnOneMeetingForm(request.POST)
         if form.is_valid():
@@ -34,6 +43,10 @@ def update_one_on_one(request, leader_username, follower_username):
     context = {}
     leader   = UserProfile.objects.get(user__username=leader_username)
     follower = UserProfile.objects.get(user__username=follower_username)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
     if (request.method == 'POST'):
         form = OneOnOneMeetingForm(request.POST, instance=[leader, follower])
         if form.is_valid():
@@ -53,6 +66,10 @@ def pdi_meeting(request, follower_username):
     context = {}
     follower = UserProfile.objects.get(user__username=follower_username)
     leader = UserProfile.objects.get(user=request.user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
     pdi_plan_formset = inlineformset_factory(PdiMeeting, PdiPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
     pdi_action_formset = inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
     if (request.method == 'POST'):     
