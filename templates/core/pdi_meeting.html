@@ -62,7 +62,7 @@
       <div class="col-9">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action="{{follower.user.username}}">
+            <form method="POST" action="{{follower.user.username}}"  id="formset">
                 {% csrf_token %}
                 <div class="row row-flex justify-content-center">     
                   <div class ="col-12" >
@@ -159,8 +159,9 @@
                     </div>
                   </div>
                 </div>
+                {{ plan_formset.management_form }}
+                {{ plan_formset.non_form_errors }}
                 <div class="form-group inlineformset">
-                  {{ plan_formset.management_form }}
                   {% for plan in plan_formset.forms %}
                     <label for="{{ leader.username.id_for_label }}" class="form-section-title">Plano</label>
                     {% comment %} {{plan_formset}} {% endcomment %}
@@ -170,8 +171,9 @@
                             <label for="id_planformset-{{ forloop.counter0 }}-description">Descrição:</label> 
                         </div>  
                         <div  >
-                            {% comment %} {{ plan.description | add_class:"form-control"  }} {% endcomment %}
-                          <input name="planformset-{{ forloop.counter0 }}-description" id="id_planformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" >                                
+                            <div style='visibility:none'>{{plan.pdi_meeting}}</div>
+                            {{ plan.description | add_class:"form-control"  }}
+                          {% comment %} <input name="planformset-{{ forloop.counter0 }}-description" id="id_planformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" >                                 {% endcomment %}
                         </div>
                       </div>
                       <div class="col-6">
@@ -210,38 +212,40 @@
                           </div>
                         </div>
                         {% if plan.nested %}
-                          {{ plan.nested.management_form }}
-                          {{ plan.nested.non_form_errors }}
+                          <div class="internalinlineformset">
+                            {{ plan.nested.management_form }}
+                            {{ plan.nested.non_form_errors }}
 
-                          {% for action_form in plan.nested.forms %}
-                          <div class=" form-group  internalinlineformset">
-                            {% comment %} {{action_formset}} {% endcomment %}
-                            <div class="pl-3 pr-3 row justify-content-between ">
-                              <div class="col-8" >
-                                {% comment %} <input name="actionplan-planformset-{{ forloop.counter0 }}-description" id="id_actionformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" > {% endcomment %}
-                                  {{ action_form.description | add_class:"form-control"  }}
-                              </div>                                                               
-                              <div class="col-2"> 
-                                <div class="date" >
-                                  {% comment %} <input name="action_formset-{{ forloop.counter0 }}-due_date" id="id_action_formset-{{ forloop.counter0 }}-due_date" placeholder="" class="form-control" >                                                                       {% endcomment %}
-                                    {{ action_form.due_date | add_class:"form-control"  }}
+                            {% for action_form in plan.nested.forms %}
+                            <div class=" form-group">
+                              {% comment %} {{action_formset}} {% endcomment %}
+                              <div class="pl-3 pr-3 row justify-content-between ">
+                                <div class="col-8" >
+                                  {% comment %} <input name="actionplan-planformset-{{ forloop.counter0 }}-description" id="id_actionformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" > {% endcomment %}
+                                    {{ action_form.description | add_class:"form-control"  }}
+                                </div>                                                               
+                                <div class="col-2"> 
+                                  <div class="date" >
+                                    {% comment %} <input name="action_formset-{{ forloop.counter0 }}-due_date" id="id_action_formset-{{ forloop.counter0 }}-due_date" placeholder="" class="form-control" >                                                                       {% endcomment %}
+                                      {{ action_form.due_date | add_class:"form-control"  }}
+                                  </div>
+                                </div>
+                                <div class="col-2"> 
+                                  <div  class="">
+                                    {% comment %} <input name="action_formset-{{ forloop.counter0 }}-status" id="id_action_formset-{{ forloop.counter0 }}-status" placeholder="" class="form-control" > {% endcomment %}
+                                      {{ action_form.status | add_class:"form-control"  }}
+                                  </div>
                                 </div>
                               </div>
-                              <div class="col-2"> 
-                                <div  class="">
-                                  {% comment %} <input name="action_formset-{{ forloop.counter0 }}-status" id="id_action_formset-{{ forloop.counter0 }}-status" placeholder="" class="form-control" > {% endcomment %}
-                                    {{ action_form.status | add_class:"form-control"  }}
+                              <div class="row justify-content-start">
+                                <div class="col-6 add-action-class">
+                                </div>
+                                <div class="col-6 remove-action-class">
                                 </div>
                               </div>
                             </div>
-                            <div class="row justify-content-start">
-                              <div class="col-6 add-action-class">
-                              </div>
-                              <div class="col-6 remove-action-class">
-                              </div>
-                            </div>
+                            {% endfor %}
                           </div>
-                          {% endfor %}
                         {% endif %}
                       </div>
                     </div>
@@ -266,7 +270,7 @@
 </div>
 {% endblock main %}
 {% block footer %}
-<script type="text/javascript">
+<script type="text/javascript">   
     $(function() {
         $('.inlineformset').formset({
             prefix: 'planformset',
@@ -276,8 +280,9 @@
             deleteCssClass: 'btn btn-secondary',    // CSS class applied to the delete link
           //  addContainerClass: 'add-plan-class',         // Container CSS class for the add link
           //  deleteContainerClass: 'remove-plan-class',      // Container CSS class for the delete link
+            added: checkNested,
         });
-      /*  $('.internalinlineformset').formset({
+        /*$('.internalinlineformset').formset({
             prefix: 'actionplan-planformset',
             addText: '+',          // Text for the add link
             deleteText: '-',            // Text for the delete link
@@ -286,6 +291,23 @@
            // addContainerClass: 'add-action-class',         // Container CSS class for the add link
            // deleteContainerClass: 'remove-action-class',      // Container CSS class for the delete link
         });*/
-    })
+    });
+    function checkNested(){
+      setTimeout( checkIt, 200);
+    };
+    function checkIt(){
+      var nestedForm = document.getElementsByClassName('internalinlineformset');
+      for (var i=0; i < nestedForm.length; i++){
+        console.log(i);
+        var element = document.getElementById('id_actionplan-planformset-'+i+'-TOTAL_FORMS');
+        element.value = '3';
+        console.log(element);
+        var element = document.getElementById('id_actionplan-planformset-'+i+'-INITIAL_FORMS');
+        element.value = '0';
+        console.log(element);
+
+      };
+    };
+
 </script>
 {% endblock footer %}

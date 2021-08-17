@@ -149,15 +149,19 @@ def pdi_meeting(request, follower_username):
             saved_pdi_meeting.follower = follower
             saved_pdi_meeting.leader = leader
             saved_pdi_meeting.save()
-            saved_plans = plan_formset.save(commit=False)
-            for saved_plan in saved_plans:
+            # saved_plans = plan_formset.save(commit=False)
+            for plan_form in plan_formset:
+                if (plan_form.cleaned_data is None or len(plan_form.cleaned_data) == 0  ):
+                    continue
+                saved_plan = plan_form.save(commit=False)
                 saved_plan.pdi_meeting = saved_pdi_meeting
                 saved_plan.save()
-                for plan in plan_formset:
-                    for nested in plan.nested:
-                        nested.save(commit=False)
-                        nested.pdi_plan = saved_plan
-                        nested.save()
+                for nested in plan_form.nested:
+                    if (nested.cleaned_data is None or len(nested.cleaned_data) == 0  ):
+                        continue
+                    nested.save(commit=False)
+                    nested.pdi_plan = saved_plan
+                    nested.save()
 
                 # action_plan_formset = ActionPlanFormset(saved_plan.actionplan_set)
                 # saved_actions = action_plan_formset.save(commit=False)
