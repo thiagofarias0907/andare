@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{% url 'core:events' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:team' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="col-md-10 ms-sm-auto col-lg-12 col-xl-12 ">
+            <h1>Plano de Cargos e Carreira</h1>
+            <div class="pt-3 pb-2 mb-3">
+                <a type="button" class="btn btn-success" href="{% url 'career:add_occupation' %}">Adicionar Metodologia</a>
+            </div>
+           
+            <div class="container">
+                <div class="row justify-content-evenly align-items-start ">
+                    {% for data in occupations_and_skills %}
+                        <div class="card col-auto m-4 p-1">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <div class="col-xs">{{ data.occupation.id }}</div>
+                                    <div class="col"><h3>{{ data.occupation.name }}</h3></div>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    {%for skill in data.skills %}
+                                      <li class="list-group-item">{{skill.name}} - {{ skill.description }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="card-footer row justify-content-between">
+                                    <div class="col-xs  p-1">
+                                        <a class="btn btn-success" href="{% url 'career:edit_occupation' data.occupation.id %}">Editar</a>
+                                    </div>
+                                    <div class="col-xs p-1">
+                                        <a class="btn btn-warning confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton-{{ data.occupation.id }}" href="{% url 'career:delete_occupation' data.occupation.id %}">Excluir</a>
+                                    </div>
+                                </div>
+                            </div>        
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% include 'partials/confirm_delete_modal.html' %}
+{% endblock main %}

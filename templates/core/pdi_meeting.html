@@ -78,7 +78,7 @@
                       {% endif %}
                     </div>
                   </div>
-                  <div class="occupation col-4">
+                  <div class="occupation col-4 align-items-center">
                     <div class="icon">
                     <i class="bi bi-award"></i>
                     </div>
@@ -86,7 +86,7 @@
                       {{ follower.occupation }}
                     </div>
                   </div>
-                  <div class="occupation col-4">
+                  <div class="occupation col-4 align-items-center">
                     <div class="icon"><i class="bi bi-speedometer"></i>
                     </div>
                     <div class="description">
@@ -95,55 +95,74 @@
                   </div>                                                   
                 </div>
                 <div class="form-group">
-                  <label for="{{ leader.username.id_for_label }}" class="form-label">PDI</label>
-                  <div class="row justify-content-between">
-                    <div class="col-6">
-                        <div  >
-                            {{ form.career_goal | add_class:"form-control"  }}
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Objetivos</label>
+                  <div class="row justify-content-between align-items-center m-1">
+                    <div class="col-1">
+                        <div class="icon">
+                            <i class="bi bi-bullseye"></i>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="">
+                    <div class="col row">
+                        <div class="col-6" >
+                            {{ form.career_goal | add_class:"form-control"  }}
+                        </div>
+                        <div class="col-6">
                             {{ form.career_tier_goal | add_class:"form-control" }}
                         </div>
                     </div>
                   </div>
-                  {% if form.career_goal.value != None %}
-                  <div class="row justify-content-center">
-                      <div class="col-6">
-                          <div  >
-                              habilidades
-                          </div>
+                  {% if form.career_goal != None %}
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Habilidades do Cargo</label>
+                  <div class="row justify-content-center align-items-center m-1">
+                    <div class="col-1">
+                        <div class="icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                    </div>
+                    {% for skill in skills %}
+                    <div class="col row justify-content-center">
+                      <div class="col skill" >
+                        {{skill}}
                       </div>
+                    </div>
+                    {%endfor%}
                   </div>
                   {% endif %}
-                  <div class="row justify-content-between">
-                    <div class="col-6">
-                        <div  >
-                            {{ form.interest_one | add_class:"form-control"  }}
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Interesses</label>
+                  <div class="row justify-content-between  align-items-center m-1">
+                    <div class="col-1 ">
+                        <div class="icon">
+                            <i class="far fa-thumbs-up"></i>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div>
-                            {{ form.interest_two | add_class:"form-control" }}
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div  >
-                            {{ form.interest_three | add_class:"form-control"  }}
-                        </div>
-                    </div>
-                    <div class="col-6">
+                    <div class="col row">
+                      <div class="col-6 mb-1">
+                          <div  >
+                              {{ form.interest_one | add_class:"form-control"  }}
+                          </div>
+                      </div>
+                      <div class="col-6">
+                          <div>
+                              {{ form.interest_two | add_class:"form-control" }}
+                          </div>
+                      </div>
+                      <div class="col-6">
+                          <div  >
+                              {{ form.interest_three | add_class:"form-control"  }}
+                          </div>
+                      </div>
+                      <div class="col-6">
                         <div>
                             {{ form.interest_four | add_class:"form-control" }}
                         </div>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="form-group inlineformset">
                   {{ plan_formset.management_form }}
-                  {% for plan in plan_formset %}
-                    <label for="{{ leader.username.id_for_label }}" class="form-label">Plano</label>
+                  {% for plan in plan_formset.forms %}
+                    <label for="{{ leader.username.id_for_label }}" class="form-section-title">Plano</label>
                     {% comment %} {{plan_formset}} {% endcomment %}
                     <div class="row justify-content-between">
                       <div class="col-6">
@@ -190,36 +209,40 @@
                             </div> 
                           </div>
                         </div>
-                        <div class="internalinlineformset">
-                        {{ action_formset.management_form }}
-                        {% for action_form in action_formset %}
-                          {% comment %} {{action_formset}} {% endcomment %}
-                          <div class="pl-3 pr-3 row justify-content-between ">
-                            <div class="col-8" >
-                              <input name="actionformset-{{ forloop.counter0 }}-description" id="id_actionformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" >
-                                {% comment %} {{ action_form.description | add_class:"form-control"  }} {% endcomment %}
-                            </div>                                                               
-                            <div class="col-2"> 
-                              <div class="date" >
-                                {% comment %} <input name="action_formset-{{ forloop.counter0 }}-due_date" id="id_action_formset-{{ forloop.counter0 }}-due_date" placeholder="" class="form-control" >                                                                       {% endcomment %}
-                                  {{ action_form.due_date | add_class:"form-control"  }}
+                        {% if plan.nested %}
+                          {{ plan.nested.management_form }}
+                          {{ plan.nested.non_form_errors }}
+
+                          {% for action_form in plan.nested.forms %}
+                          <div class=" form-group  internalinlineformset">
+                            {% comment %} {{action_formset}} {% endcomment %}
+                            <div class="pl-3 pr-3 row justify-content-between ">
+                              <div class="col-8" >
+                                {% comment %} <input name="actionplan-planformset-{{ forloop.counter0 }}-description" id="id_actionformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" > {% endcomment %}
+                                  {{ action_form.description | add_class:"form-control"  }}
+                              </div>                                                               
+                              <div class="col-2"> 
+                                <div class="date" >
+                                  {% comment %} <input name="action_formset-{{ forloop.counter0 }}-due_date" id="id_action_formset-{{ forloop.counter0 }}-due_date" placeholder="" class="form-control" >                                                                       {% endcomment %}
+                                    {{ action_form.due_date | add_class:"form-control"  }}
+                                </div>
+                              </div>
+                              <div class="col-2"> 
+                                <div  class="">
+                                  {% comment %} <input name="action_formset-{{ forloop.counter0 }}-status" id="id_action_formset-{{ forloop.counter0 }}-status" placeholder="" class="form-control" > {% endcomment %}
+                                    {{ action_form.status | add_class:"form-control"  }}
+                                </div>
                               </div>
                             </div>
-                            <div class="col-2"> 
-                              <div  class="">
-                                {% comment %} <input name="action_formset-{{ forloop.counter0 }}-status" id="id_action_formset-{{ forloop.counter0 }}-status" placeholder="" class="form-control" > {% endcomment %}
-                                  {{ action_form.status | add_class:"form-control"  }}
+                            <div class="row justify-content-start">
+                              <div class="col-6 add-action-class">
+                              </div>
+                              <div class="col-6 remove-action-class">
                               </div>
                             </div>
                           </div>
-                          <div class="row justify-content-start">
-                            <div class="col-6 add-action-class">
-                            </div>
-                            <div class="col-6 remove-action-class">
-                            </div>
-                          </div>
-                        {% endfor %}
-                        </div>
+                          {% endfor %}
+                        {% endif %}
                       </div>
                     </div>
                     {% comment %} <div class="row justify-content-start">
@@ -232,7 +255,7 @@
                 </div>
               <div class="row justify-content-between">
                 <div class="row col-8 justify-content-end mr-1">
-                    <button type="submit" class="btn btn-success">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
               </div>
             </form>
@@ -246,7 +269,7 @@
 <script type="text/javascript">
     $(function() {
         $('.inlineformset').formset({
-            prefix: 'plan_formset',
+            prefix: 'planformset',
             addText: '+ Adicionar plano',          // Text for the add link
             deleteText: 'Remover plano',            // Text for the delete link
             addCssClass: 'btn btn-secondary col-2',          // CSS class applied to the add link
@@ -254,15 +277,15 @@
           //  addContainerClass: 'add-plan-class',         // Container CSS class for the add link
           //  deleteContainerClass: 'remove-plan-class',      // Container CSS class for the delete link
         });
-        $('.internalinlineformset').formset({
-            prefix: 'action_formset',
+      /*  $('.internalinlineformset').formset({
+            prefix: 'actionplan-planformset',
             addText: '+',          // Text for the add link
             deleteText: '-',            // Text for the delete link
             addCssClass: 'btn btn-secondary',          // CSS class applied to the add link
             deleteCssClass: 'btn btn-secondary',    // CSS class applied to the delete link
            // addContainerClass: 'add-action-class',         // Container CSS class for the add link
            // deleteContainerClass: 'remove-action-class',      // Container CSS class for the delete link
-        });
+        });*/
     })
 </script>
 {% endblock footer %}

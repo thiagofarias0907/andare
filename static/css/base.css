@@ -12,8 +12,7 @@
     position: relative
 }
 .profile-container-lg {
-    border:0;
-    border:solid;
+    border:0 solid;
     border-color:transparent;
     border-radius: 25%;
     overflow:hidden;
@@ -24,13 +23,13 @@
 }
 .profile-container img {
     height: 100%;
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-height: 100%;
-  min-width: 100%;
-  transform: translate(-50%, -50%);
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-height: 100%;
+    min-width: 100%;
+    transform: translate(-50%, -50%);
 }
 .profile-container-lg img {
     height: 100%;
@@ -43,15 +42,14 @@
   transform: translate(-50%, -50%);
 }
 .profile-container-squared {
-    border:0;
-    border:solid;
+    border:0px solid;
     border-color:transparent;
     border-radius: 10%;
     overflow:hidden;
     padding: 0px;
     width: 80px;
     height: 80px;
-    position: relative
+    position: relative;
 }
 
 .profile-container-squared img {
@@ -64,6 +62,29 @@
   min-width: 100%;
   transform: translate(-50%, -50%);
 }
+
+
+.card-profile-container {
+    border:0px solid;
+    border-color:transparent;
+    border-radius: 15%;
+    overflow:hidden;
+    margin: 2px;
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+.card-profile-container img {
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-height: 100%;
+  min-width: 100%;
+  transform: translate(-50%, -50%);
+}
+
 
 .sidebar .nav-link {
     overflow:hidden;
@@ -122,6 +143,19 @@ a:hover {
    background-color:#707070;
 }
 
+
+.rounded-square.small {
+    height: 30px; 
+    width: 30px; 
+    border-radius: 10%;
+    text-align: center;
+    background-color: #7D85DE;
+    margin: 2px;
+    color: #f8f9fa;
+    font-weight: 900;
+ }
+ 
+
 .right-bar{
    color: #707070;
 }
@@ -162,6 +196,16 @@ a:hover {
 .events .title{
     text-transform: uppercase;
     color: #CBB1FB; 
+    font-weight: 800;
+    font-size: 1em;
+    
+}
+.title.secondary{
+    text-transform: uppercase;
+    color: #7D85DE; 
+    font-weight: 800;
+    font-size: 1em;
+    
 }
 .events label {
     
@@ -171,3 +215,38 @@ a:hover {
 .events .rounded-square  {
     background-color:#CBB1FB;
  }
+
+.events .rounded-square.highlight  {
+background-color:#8F85FF;
+}
+.events .rounded-square.dark  {
+    background-color:#707070;
+}
+
+
+h4 {
+    color: #7D85DE;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+.form-section-title {
+    color: #7D85DE;
+    text-transform: uppercase;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-top: 1vh;
+}
+.form-label {
+    color: #7D85DE;
+    text-transform: uppercase;
+    font-size: 1em;
+    margin-top: 1vh;
+    margin-bottom: 0.5vh;
+}
+/* 
+input[type="radio"] {
+    color: #8F85FF;
+    background-color: #E9AFB2;
+} */

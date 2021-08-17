@@ -1,3 +1,4 @@
+from accounts import models
 from django.forms.models import inlineformset_factory
 from career.models import Occupation, Skill
 from django.shortcuts import render, redirect
@@ -5,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.apps import apps
 
 from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile
-from .forms import OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm
+from .forms import ActionPlanStatusForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
 
 @login_required(login_url='/accounts/login/')
 def home(request):
@@ -32,9 +33,30 @@ def one_on_one(request):
             f = form.save(commit=False)
             f.leader = leader
             f.save()
-            return redirect('/')
+            return redirect('/events')
     leader = UserProfile.objects.get(user=request.user)
     form = OneOnOneMeetingForm(instance=leader)
+    context['form'] = form
+    return render(request, template_name=template, context=context)
+
+def one_on_one_follower(request, follower):
+    template = 'core/one_on_one.html'
+    context = {}
+    leader   = UserProfile.objects.get(user=request.user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
+    if (request.method == 'POST'):     
+        form = OneOnOneMeetingForm(request.POST)
+        if form.is_valid():
+            f = form.save(commit=False)
+            f.leader = leader
+            f.save()
+            return redirect('/events')
+    follower_profile = UserProfile.objects.get(user__username= follower)
+    form = OneOnOneMeetingForm(instance=leader)
+    context['follower'] = follower_profile
     context['form'] = form
     return render(request, template_name=template, context=context)
 
@@ -54,10 +76,55 @@ def update_one_on_one(request, leader_username, follower_username):
             f.leader = leader
             f.follower = follower
             f.save()
-            return redirect('/')
+            return redirect('/events')
     form = OneOnOneMeetingForm(instance=[leader, follower])
     context['form'] = form
     return render(request, template_name=template, context=context)
+
+
+
+# def pdi_meeting(request, follower_username):
+#     template = 'core/pdi_meeting.html'
+#     context = {}
+#     follower = UserProfile.objects.get(user__username=follower_username)
+#     leader = UserProfile.objects.get(user=request.user)
+#     oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
+#     pdi_meetings = PdiMeeting.objects.filter(leader=leader)
+#     context['one_on_ones'] = oneonone_meetings
+#     context['pdi_meetings'] = pdi_meetings
+#     pdi_plan_formset = inlineformset_factory(PdiMeeting, PdiPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
+#     pdi_action_formset = inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
+#     if (request.method == 'POST'):     
+#         pdi_form  = PdiMeetingForm(request.POST)
+#         plan_formset = pdi_plan_formset(request.POST, request.FILES, prefix='planformset')
+#         action_formset = pdi_action_formset(request.POST, request.FILES, prefix='actionformset')
+#         if plan_formset.is_valid() and action_formset.is_valid() and pdi_form.is_valid():
+#             saved_pdi_meeting = pdi_form.save(commit=False)
+#             saved_pdi_meeting.follower = follower
+#             saved_pdi_meeting.leader = follower
+#             saved_pdi_meeting.save()
+
+#             plan_formset_to_commit = plan_formset.save(commit=False)
+#             counter = 0
+#             for form in plan_formset_to_commit:
+#                 form.pdi_meeting = PdiMeeting.objects.get(id=saved_pdi_meeting.id)
+#                 form.save()
+#                 action_formset_to_commit = action_formset.save(commit=False)
+#                 for action_form in action_formset_to_commit:
+#                     action_form.pdi_plan = PdiPlan.objects.get(id=form.id)
+#                     action_form.save()
+                
+#             return redirect('/')
+#     occupations = Occupation.objects.all()      
+#     skills      = Skill.objects.all()
+#     form = PdiMeetingForm(instance=follower)
+#     context['form'] = form
+#     context['plan_formset'] = pdi_plan_formset(prefix='planformset')
+#     context['action_formset'] = pdi_action_formset(prefix='actionformset')
+#     context['occupations'] = occupations
+#     context['skills'] = skills
+#     context['follower'] = follower
+#     return render(request, template_name=template, context=context)
 
 
 
@@ -70,73 +137,182 @@ def pdi_meeting(request, follower_username):
     pdi_meetings = PdiMeeting.objects.filter(leader=leader)
     context['one_on_ones'] = oneonone_meetings
     context['pdi_meetings'] = pdi_meetings
-    pdi_plan_formset = inlineformset_factory(PdiMeeting, PdiPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
-    pdi_action_formset = inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
+    # pdi_meeting = PdiMeeting.objects.get_object_or_404(id= pdi_meeting_id)
+    # pdi_plan_formset = PdiPlanFormset(instance=pdi_meeting)
+    # pdi_plan_formset = PdiPlanFormset()
+    # pdi_action_formset = ActionPlanFormset
     if (request.method == 'POST'):     
         pdi_form  = PdiMeetingForm(request.POST)
-        plan_formset = pdi_plan_formset(request.POST, request.FILES, prefix='planformset')
-        action_formset = pdi_action_formset(request.POST, request.FILES, prefix='actionformset')
-        if plan_formset.is_valid() and action_formset.is_valid() and pdi_form.is_valid():
+        plan_formset = PdiPlanFormset(request.POST, request.FILES, prefix='planformset')
+        if plan_formset.is_valid() and pdi_form.is_valid():
             saved_pdi_meeting = pdi_form.save(commit=False)
             saved_pdi_meeting.follower = follower
-            saved_pdi_meeting.leader = follower
+            saved_pdi_meeting.leader = leader
             saved_pdi_meeting.save()
+            saved_plans = plan_formset.save(commit=False)
+            for saved_plan in saved_plans:
+                saved_plan.pdi_meeting = saved_pdi_meeting
+                saved_plan.save()
+                for plan in plan_formset:
+                    for nested in plan.nested:
+                        nested.save(commit=False)
+                        nested.pdi_plan = saved_plan
+                        nested.save()
 
-            plan_formset_to_commit = plan_formset.save(commit=False)
-            counter = 0
-            for form in plan_formset_to_commit:
-                form.pdi_meeting = PdiMeeting.objects.get(id=saved_pdi_meeting.id)
-                form.save()
-                action_formset_to_commit = action_formset.save(commit=False)
-                for action_form in action_formset_to_commit:
-                    action_form.pdi_plan = PdiPlan.objects.get(id=form.id)
-                    action_form.save()
-                
-            return redirect('/')
-    occupations = Occupation.objects.get()      
-    skills      = Skill.objects.get()
+                # action_plan_formset = ActionPlanFormset(saved_plan.actionplan_set)
+                # saved_actions = action_plan_formset.save(commit=False)
+                # for action in saved_actions:
+                #     saved_action = action.save(commit=False)
+                #     saved_action.pdi_plan = saved_plan
+                #     saved_action.save()
+            return redirect('/events')
+    occupations = Occupation.objects.all()      
+    skills      = Skill.objects.all()
     form = PdiMeetingForm(instance=follower)
     context['form'] = form
-    context['plan_formset'] = pdi_plan_formset(prefix='planformset')
-    context['action_formset'] = pdi_action_formset(prefix='actionformset')
+    context['plan_formset'] = PdiPlanFormset(prefix='planformset')
     context['occupations'] = occupations
     context['skills'] = skills
     context['follower'] = follower
     return render(request, template_name=template, context=context)
 
-    
-    # template = 'project_management/create_methodologysteps.html'
-    # context = {}
-    # methodology_steps_formSet = inlineformset_factory(MethodologySteps, Steps, exclude=(), can_delete=False,  min_num= 3, max_num= 10)
-    # if request.method == "POST":
-    #     methodology_form = MethodologyStepsForm(request.POST)
-    #     formset = methodology_steps_formSet(request.POST, request.FILES,prefix='stepsformset')
-    #     if formset.is_valid() and methodology_form.is_valid():
-    #         methodology_form.save()
-    #         formset_save = formset.save(commit=False)
-    #         for form in formset_save:
-    #             form.methodology = MethodologySteps.objects.get(name=methodology_form.data.get('name'))
-    #             form.save()
-    #         messages.success(request,'Metodologia adicionada com sucesso!')
-    #     else:
-    #         messages.warning(request,'Erro ao salvar! Verifique os dados inseridos')
-    # else:
-    #     methodology_form = MethodologyStepsForm()
-    #     formset = methodology_steps_formSet(prefix='stepsformset')
-    # context['steps_formset'] = formset
-    # context['methodology_form'] = methodology_form
-    # return render(request, template_name=template, context=context)
+def edit_pdi_meeting(request, follower_username):
+    template = 'core/pdi_meeting_update.html'
+    context = {}
+    follower = UserProfile.objects.get(user__username=follower_username)
+    leader = UserProfile.objects.get(user=request.user)
+    pdi_meeting = PdiMeeting.objects.filter(follower=follower).order_by('-date_time').first()
+    pdi_plans = PdiPlan.objects.filter(pdi_meeting=pdi_meeting)
+    form = PdiMeetingForm(instance=pdi_meeting)
+    context['pdi_meeting'] = pdi_meeting
+    pdi_plan_formset = PdiPlanFormset(instance=pdi_meeting, prefix='planformset')
+    if (request.method == 'POST'):     
+        pdi_form  = PdiMeetingForm(request.POST)
+        plan_formset = PdiPlanFormset(request.POST, prefix='planformset')
+        if plan_formset.is_valid() and pdi_form.is_valid():
+            saved_pdi_meeting = pdi_form.save(commit=False)
+            saved_pdi_meeting.follower = follower
+            saved_pdi_meeting.leader = leader
+            saved_pdi_meeting.id = pdi_meeting.id
+            saved_pdi_meeting.save()
+            for form in plan_formset:
+                saved_plan = form.save(commit=False)
+                saved_plan.id = form.cleaned_data['id'].id
+                saved_plan.pdi_meeting = saved_pdi_meeting
+                saved_plan.save()
+                for nested in form.nested:
+                    saved_nested = nested.save(commit=False)
+                    saved_nested.pdi_plan = saved_plan
+                    saved_nested.id = nested.cleaned_data['id'].id
+                    saved_nested.save()
+            return redirect('/events')
+    occupations = Occupation.objects.all()      
+    skills      = Skill.objects.all()
+    context['form'] = form
+    context['plan_formset'] = pdi_plan_formset
+    context['occupations'] = occupations
+    context['skills'] = skills
+    context['follower'] = follower
+    return render(request, template_name=template, context=context)
 
 
-# carrer_goal = models.
-# carrer_tier_goal = mo
-# interest_one = models
-# interest_two = models
-# interest_three = mode
-# interest_four = model
-# interest_five = model
-# plan_description = mo
-# plan_type = models.Sm
-# plan_action = models.
-# plan_action_due_date 
-# plan_action_status = 
+def pdi_meeting_evaluate(request, follower_username):
+    template = 'core/pdi_meeting_evaluate.html'
+    context = {}
+    follower = UserProfile.objects.get(user__username=follower_username)
+    leader = UserProfile.objects.get(user=request.user)
+
+    pdi_meeting = PdiMeeting.objects.filter(follower=follower).order_by('-date_time').first()
+    pdi_plans = PdiPlan.objects.filter(pdi_meeting=pdi_meeting)
+    actions_and_plans = []
+    action_plans = {}
+    action_plans['plan'] = None
+    action_plans['actions'] = []
+    for plan in pdi_plans:
+        action_plans['plan'] = plan
+        actions_plans_objects = ActionPlan.objects.filter(pdi_plan=plan)
+        # action_plans['formset'] = ActionPlanFormset(prefix='actionplanformset'+str(plan.id),instance=plan)
+        for action in actions_plans_objects:
+            form = ActionPlanStatusForm(instance=action)
+            action_plans['actions'].append({'action':action, 'form':form})
+        action_plans['formset'] = ActionPlanStatusFormset(prefix='actionplanformset'+str(plan.id), instance=plan)
+        actions_and_plans.append(action_plans)
+
+    context['follower']     = follower
+    context['pdi_meeting']  = pdi_meeting
+    context['pdi_plans']    = pdi_plans
+    context['actions_and_plans'] = actions_and_plans
+    if (request.method == 'POST'):     
+        # action_plan_formset = ActionPlanFormset(request.POST, request.FILES, prefix='actionplanformset35')
+        for plan in pdi_plans:
+            # action_plan_formset = ActionPlanStatusFormset(prefix='actionplanformset'+str(plan.id), instance=plan)
+            action_plan_form = ActionPlanStatusForm(request.POST, request.FILES)
+            if action_plan_form.is_valid():
+                saved_form = action_plan_form.save(commit=False)
+                saved_form.pdi_plan_id = plan.id
+                saved_form.save()
+            # for form in action_plan_formset:
+                # if form.is_valid():
+                #     form.save()
+        return redirect('core:team')
+        # pdi_form  = PdiMeetingForm(request.POST)
+        # plan_formset = PdiPlanFormset(request.POST, request.FILES, prefix='planformset')
+        # if plan_formset.is_valid() and pdi_form.is_valid():
+        #     saved_pdi_meeting = pdi_form.save(commit=False)
+        #     saved_pdi_meeting.follower = follower
+        #     saved_pdi_meeting.leader = leader
+        #     saved_pdi_meeting.save()
+        #     saved_plans = plan_formset.save(commit=False)
+        #     for saved_plan in saved_plans:
+        #         saved_plan.pdi_meeting = saved_pdi_meeting
+        #         saved_plan.save()
+        #         for plan in plan_formset:
+        #             for nested in plan.nested:
+        #                 nested.save(commit=False)
+        #                 nested.pdi_plan = saved_plan
+        #                 nested.save()
+        #     return redirect('/team')
+    return render(request, template_name=template, context=context)
+
+
+@login_required(login_url='/accounts/login/')
+def list_events(request):
+    template = 'core/events.html'
+    context = {}
+    user      = UserProfile.objects.get(user=request.user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user)
+    pdi_meetings = PdiMeeting.objects.filter(leader=user)
+    followers = []
+    for meeting in oneonone_meetings:
+        profile = UserProfile.objects.get(id= meeting.follower_id)
+        if profile not in followers:
+            followers.append(profile)
+    context['one_on_ones'] = oneonone_meetings
+    context['pdi_meetings'] = pdi_meetings
+    context['followers'] = followers
+    return render(request, template_name=template, context=context)
+
+
+
+
+@login_required(login_url='/accounts/login/')
+def show_team(request):
+    template = 'core/team.html'
+    context = {}
+    user = UserProfile.objects.get(user=request.user)
+    all_pdi_meetings = PdiMeeting.objects.filter(leader=user).order_by('-date_time')
+    followers = []
+    pdi_meetings = []
+    for meeting in all_pdi_meetings:
+        profile = UserProfile.objects.get(id= meeting.follower_id)
+        if profile not in followers:
+            followers.append(profile)
+            pdi_plans = PdiPlan.objects.filter(pdi_meeting=meeting)
+            plans = []
+            for plan in pdi_plans:
+                plans.append({'plan':plan,'description':plan.description, 'plan_type':plan.plan_type})
+            follower_pdi = {'follower':profile,'pdi_plans':plans}
+            pdi_meetings.append(follower_pdi)
+    context['pdi_meetings'] = pdi_meetings
+    context['followers'] = followers
+    return render(request, template_name=template, context=context)

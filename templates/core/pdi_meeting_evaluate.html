@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{%block head %}
+  <link rel="stylesheet" href="{% static '/css/pdi.css' %}"/>
+{%endblock head%}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{% url 'core:home' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+<div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="row justify-content-center col-md-9 ms-sm-auto col-lg-10 col-xl-12">
+      <div class="col-12 mb-5">        
+      {% include 'partials/messages.html' %}
+      </div>
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+            <form method="POST" action="{{follower.user.username}}">
+                {% csrf_token %}
+                <div class="row row-flex justify-content-center">     
+                  <div class ="col-12" >
+                    <h4>Plano de Desenvolvimento Individual</h4>
+                    <p>{{ follower.user.first_name }} {{ follower.user.last_name }}</p>
+                  </div>
+                  <div class="col-2 align-center" >
+                    <div class="row justify-content-center">
+                      {% if follower.picture %}
+                          <img src="{{  follower.picture.url }}" class="profile-container-squared" alt="profile_pic">
+                      {% else %}
+                          <img src="{% static '/img/profile_default.png' %}" class="profile-container-squared" alt="profile_pic">
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="occupation col-4 align-items-center">
+                    <div class="icon">
+                    <i class="bi bi-award"></i>
+                    </div>
+                    <div class="description">
+                      {{ follower.occupation }}
+                    </div>
+                  </div>
+                  <div class="occupation col-4 align-items-center">
+                    <div class="icon"><i class="bi bi-speedometer"></i>
+                    </div>
+                    <div class="description">
+                      Nível {{ follower.occupation.tier }} 
+                    </div>
+                  </div>                                                   
+                </div>
+                <div class="">
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Objetivos</label>
+                  <div class="row justify-content-between align-items-center m-1">
+                    <div class="col-1">
+                        <div class="icon">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                    </div>
+                    <div class="col row">
+                        <div class="col-6" >
+                            {{ pdi_meeting.career_goal }}
+                        </div>
+                        <div class="col-6">
+                            {{ pdi_meeting.career_tier_goal}}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Planos</label>
+                  {% for plan in actions_and_plans %}
+                  <div class="row row-flex ">
+                    <div class="col-1">
+                      <div class="plan-number row align-items-center justify-content-center">
+                        {{forloop.counter}}
+                      </div>
+                    </div>
+                    <div class="col-8">
+                      <div class="row  col-12 plan-type">
+                        {{ plan.plan.get_plan_type_display }}
+                      </div>
+                      <div class="row col-12 plan-title">
+                        {{ plan.plan.description }}
+                      </div>
+                          
+                      {% for action_plan in plan.actions %}
+                      
+                      {% comment %} {{ plan.formset.management_form }} {% endcomment %}
+                        {% comment %} {{action_plan.action}}
+                        {{action_plan.form}} {% endcomment %}
+                      
+                        <div class="row row-flex">
+                          <div class="col-6">
+                            {{ action_plan.action.description }}
+                          </div>
+                          <div class="col-2">
+                            {{ action_plan.action.due_date }}
+                          </div>
+                          {% comment %} <div class="col-6">
+                            {{ action_plan.description }}
+                          </div>
+                          <div class="col-2">
+                            {{ action_plan.due_date }}
+                          </div> {% endcomment %}
+                          <div class="col-4">
+                            {{action_plan.form}}
+                            {% comment %} {% for formset in plan.formset %} {% endcomment %}
+                              {% comment %} {{formset}} {% endcomment %}
+                              {% comment %} {{plan.formset}} {% endcomment %}
+                            
+
+                              {% comment %} <input type='radio' id='id_actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' name='actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' value='1'> Em Aberto                              
+                              <input type='radio' id='id_actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' name='actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' value='1'> Em Aberto                              
+                              <input type='radio' id='id_actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' name='actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' value='2'> Inciado
+                              <input type='radio' id='id_actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' name='actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' value='3'> Parcial 
+                              <input type='radio' id='id_actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' name='actionplanformset{{plan.plan.id}}-{{forloop.counter0}}-status' value='4'> Completo {% endcomment %}
+                              {% comment %} {% if formset.prefix == 'actionplanformset{{plan.plan.id}}-{{forloop.parentloop.counter0}}' %}
+                                {{formset}}
+                              {% endif %} {% endcomment %}
+                            {% comment %} {% endfor %} {% endcomment %}
+                            {% comment %} {{ plan.formset  }} {% endcomment %}
+                            {% comment %} {{ action_plan.get_status_display}} {% endcomment %}
+                          </div>
+                          
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {%endfor %}
+                </div>
+                {% comment %} <div class="form-group actionplan_formset">
+                  {{ actionplan_formset.management_form }}
+                  {% for action_form in actionplan_formset %}
+                  <div class=" form-group  actionplan_formset">
+                    <div class="pl-3 pr-3 row justify-content-between ">
+                      <div class="col-8" >
+                          {{ action_form.description | add_class:"form-control"  }}
+                      </div>                                                               
+                      <div class="col-2"> 
+                        <div class="date" >
+                            {{ action_form.due_date | add_class:"form-control"  }}
+                        </div>
+                      </div>
+                      <div class="col-2"> 
+                        <div  class="">
+                            {{ action_form.status | add_class:"form-control"  }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row justify-content-start">
+                      <div class="col-6 add-action-class">
+                      </div>
+                      <div class="col-6 remove-action-class">
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div> {% endcomment %}
+              <div class="row justify-content-between">
+                <div class="row col-8 justify-content-end mr-1">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock main %}
+{% block footer %}
+<script type="text/javascript">
+    $(function() {
+        $('.inlineformset').formset({
+            prefix: 'planformset',
+            addText: '+ Adicionar plano',          // Text for the add link
+            deleteText: 'Remover plano',            // Text for the delete link
+            addCssClass: 'btn btn-secondary col-2',          // CSS class applied to the add link
+            deleteCssClass: 'btn btn-secondary',    // CSS class applied to the delete link
+          //  addContainerClass: 'add-plan-class',         // Container CSS class for the add link
+          //  deleteContainerClass: 'remove-plan-class',      // Container CSS class for the delete link
+        });
+      /*  $('.internalinlineformset').formset({
+            prefix: 'actionplan-planformset',
+            addText: '+',          // Text for the add link
+            deleteText: '-',            // Text for the delete link
+            addCssClass: 'btn btn-secondary',          // CSS class applied to the add link
+            deleteCssClass: 'btn btn-secondary',    // CSS class applied to the delete link
+           // addContainerClass: 'add-action-class',         // Container CSS class for the add link
+           // deleteContainerClass: 'remove-action-class',      // Container CSS class for the delete link
+        });*/
+    })
+</script>
+{% endblock footer %}

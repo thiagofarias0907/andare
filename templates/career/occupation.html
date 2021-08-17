@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{% url 'core:events' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="#">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:team' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="col-md-10 ms-sm-auto col-lg-12 col-xl-12 ">
+            <h1>Plano de Cargos e Carreira</h1>
+            <div class="pt-3 pb-2 mb-3">
+                <a type="button" class="btn btn-success" href="{% url 'career:add_occupation' %}">Adicionar Metodologia</a>
+            </div>
+           
+            <div class="container">
+              <form method='POST' action=".">
+                {% csrf_token %}
+                {{ form.management_form }}
+                {{ form.non_form_errors }}
+                <div class='card'>
+                  <div class='card-body'>
+                    <div class="row justify-content-evenly align-items-start  p-3">
+
+                      {% comment %} {{form}}
+                      {{formset}} {% endcomment %}
+
+                      <div class='subtitle'>
+                        CARGO
+                      </div>
+                      <div class="row row-flex justify-content-between">
+                      {% for item in form %}
+                        {%if forloop.last %}
+                        <div class="col-12">
+                          <label> {{item.label}} </label>
+                        </div>
+                        <div class="col">
+                          {{item | add_class:'form-control'}}
+                        </div>
+                        {%else%}
+                        <div class="col-4">
+                          <div class="col-12 p-0">
+                            <label> {{item.label}} </label>
+                          </div>
+                          <div class="col-12  p-0">
+                            {{item | add_class:'form-control col '}}
+                          </div>
+                        </div>
+                        {%endif%}
+                      {%endfor%}
+                      </div>
+                      <div class='subtitle pt-3'>
+                        HABILIDADES
+                      </div>
+                      <div class="row row-flex">
+                      {{ formset.management_form }}
+                      {{ formset.non_form_errors }}
+                      {% for form in formset.forms %}
+                        <div class="col-3">
+                          {%if forloop.first %}
+                            <label> {{form.name.label}} </label>
+                          {%endif%}
+                          {{form.name | add_class:'form-control'}}
+                        </div>
+                        <div class="col-7">
+                          {%if forloop.first %}
+                          <label> {{form.description.label}} </label>
+                          {%endif%}
+                          {{form.description | add_class:'form-control'}}
+                        </div>
+                      {%endfor%}
+                      </div>
+                        
+                      {% comment %} {% if occupation  %}
+                        <div class="card col-auto m-4 p-1">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <div class="col-xs">{{ occupation.id }}</div>
+                                    <div class="col"><h3>{{ occupation.name }}</h3></div>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    {%for skill in skills %}
+                                        {% if skill.occupation_id == occupation.id  %} 
+                                            <li class="list-group-item">{{skill.name}} - {{ skill.description }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                                <div class="card-footer row justify-content-between">
+                                    <div class="col-xs  p-1">
+                                        <a class="btn btn-success" href="{% url 'career:edit_occupation' occupation.id %}">Editar</a>
+                                    </div>
+                                    <div class="col-xs p-1">
+                                        <a class="btn btn-warning confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton-{{ occupation.id }}" href="{% url 'career:delete_occupation' occupation.id %}">Excluir</a>
+                                    </div>
+                                </div>
+                            </div>        
+                        </div>
+                      {% endif %} {% endcomment %}
+                    </div>
+                    <div class="row justify-content-center">
+                      <div class="justify-content-center mr-1">
+                          <button type="submit" class="btn btn-primary">Salvar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+        </div>
+    </div>
+{% include 'partials/confirm_delete_modal.html' %}
+{% endblock main %}
+{% block footer %}
+{% endblock footer %}

@@ -64,7 +64,7 @@ class PdiMeeting(models.Model):
 class PdiPlan(models.Model):
     TYPE_CHOICES = [(1,'Desenvolver'),(2,'Aprimorar'),(3,'Reduzir')]
 
-    description  = models.TextField(help_text='Descrição / Objetivo do Plano'  , max_length=120)
+    description  = models.CharField(help_text='Descrição / Objetivo do Plano'  , max_length=120)
     plan_type    = models.SmallIntegerField(choices=TYPE_CHOICES, default=1)
     # actions_plan = models.ManyToManyField(ActionPlan) 
 
@@ -72,7 +72,7 @@ class PdiPlan(models.Model):
 
 class ActionPlan(models.Model):
     STATUS_CHOICES = [(1,'Em Aberto'),(2,'Iniciado'),(3,'Parcial'),(4,'Completo')]
-    description = models.TextField(help_text='Descreva o plano de ação', max_length='255')
+    description = models.CharField(help_text='Descreva o plano de ação', max_length=255)
     due_date    = models.DateField(default=date.today)
     status      = models.SmallIntegerField(choices=STATUS_CHOICES)
     pdi_plan    = models.ForeignKey(PdiPlan, on_delete=models.CASCADE)

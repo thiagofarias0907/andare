@@ -74,7 +74,7 @@
                     <p class="card-text">
                         <i>@{{ user.username | default:user.username }}</i>
                     </p>
-                    <a href="{% url 'accounts:change_password' %}" type="button" class="btn btn-success"  style="margin:3px">Alterar Senha</a>
+                    <a href="{% url 'accounts:change_password' %}" type="button" class="btn btn-primary"  style="margin:3px">Alterar Senha</a>
                     {% if user.user_profile %}
                         <a href="{% url 'accounts:update_profile' user.username  %}" type="button" class="btn btn-secondary" style="margin:3px">Alterar Imagem</a>
                     {% else %}
@@ -105,7 +105,7 @@
             <!--              <input type="checkbox" class="form-check-input" id="Check1">-->
             <!--              <label class="form-check-label" for="Check1">Check me out</label>-->
             <!--            </div>-->
-                    <button type="submit" class="btn btn-success">Atualizar</button>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
                 </form>
             </div>
         </div>

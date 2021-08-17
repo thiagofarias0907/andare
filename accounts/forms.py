@@ -7,7 +7,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         verbose_name = 'Formulário De UserProfile'
-        exclude = ['user']
+        exclude = ['user', 'picture']
 
 class UserProfilePictureForm(forms.ModelForm):
     class Meta:

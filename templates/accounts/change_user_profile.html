@@ -76,7 +76,7 @@
                             <label for="{{ form.picture.id_for_label }}" >Atualizar imagem do Perfil:</label>
                             {{ form.picture|add_class:"form-control-file"|attr:"autofocus" }}
                           </div>
-                          <button type="submit" class="btn btn-success">Atualizar</button>
+                          <button type="submit" class="btn btn-primary">Atualizar</button>
                         </form>
                     {% else %}
                         <form method="POST" action="." enctype="multipart/form-data">
@@ -85,7 +85,7 @@
                             <label for="{{ form.picture.id_for_label }}" >Alterar imagem do Perfil:</label>
                             {{ form.picture|add_class:"form-control-file"|attr:"autofocus" }}
                           </div>
-                          <button type="submit" class="btn btn-success">Alterar</button>
+                          <button type="submit" class="btn btn-primary">Alterar</button>
                         </form>
                     {% endif %}
                 </div>

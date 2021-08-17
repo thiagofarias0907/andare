@@ -9,6 +9,7 @@
     border-color:transparent;
     border-radius: 1rem 1rem;
     display: flex;
+    text-transform: uppercase;
 }
 
 .occupation .icon {
@@ -64,4 +65,65 @@
   min-height: 100%;
   min-width: 100%;
   transform: translate(-50%, -50%);
+}
+
+.icon {
+    background-color: #EEEEEE;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding-top: 0.25rem; 
+    border-radius: 1rem 1rem;
+    text-align: center;
+}
+.icon i {
+    font-size: 2em;
+    line-height: 1.5em;
+    color: #7D85DE;
+}
+
+.skill {
+    background-color: #D4D2D5;
+    height: 2em;
+    padding: 0.25em;
+    margin: 0 1vw 0 1vw;
+    border-radius: 5px;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.plan-type {
+    text-transform: uppercase;
+    color: #7D85DE;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
+.plan-title {
+    text-transform: capitalize;
+    color: #707070;
+    font-weight: 700;
+    font-size: 1.0em;
+    margin-bottom: 1em;
+}
+
+.plan-number {
+    background-color: #7D85DE;
+    padding: 0.5em;
+    height: 100%;
+    max-width: 10px;
+    
+    margin-left: 1em;
+
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+
+    border:0;
+    border:solid;
+    border-color:transparent;
+    border-radius: 1rem 1rem;
+}
+
+.invisible{
+    display: none;
 }

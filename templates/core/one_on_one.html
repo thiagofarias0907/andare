@@ -63,13 +63,31 @@
           <div class="card-body">
             <form method="POST" action=".">
                 {% csrf_token %}
-                <div class="row row-flex justify-content-center">
-                    <div class="form-group col-6" >
+                <div class="row row-flex justify-content-center  p-3 pb-5">
+                    <div class="col-6 row justify-content-start" >
+                      <div class="col-12">
                         <label for="{{ follower.username.id_for_label }}" class="form-label">COLABORADOR</label>
+                      </div>
+                      {% if follower %}
+                      <div class="col-3">
+                        <div class="profile-container-squared">
+                          {% if follower.picture %}
+                            <img src="{{ follower.picture.url }}" alt="profile_pic">
+                          {% else %}
+                            <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <span style="font-size:2em">{{ follower.user.first_name }} </span>
+                        <br>{{ follower.user.last_name }}
+                      </div>
+                      {% else %}
                         {{ form.follower|add_class:"form-control" }}
                         {% if form.follower != 0 %} 
                           {{ form.follower__occupation }}
                         {% endif %}
+                      {%endif%}
                     </div>
                     <div class="col-6 row justify-content-start">
                       <div class="col-12">
@@ -78,15 +96,10 @@
                       <div class="col-3">
                         <div class="profile-container-squared">
                           {% if user.user_profile.picture %}
-                              <a href="{% url 'accounts:change_profile' %} ">
-                                  <img src="{{ user.user_profile.picture.url }}" alt="profile_pic">
-                              </a>
+                            <img src="{{ user.user_profile.picture.url }}" alt="profile_pic">
                           {% else %}
-                              <a href="{% url 'accounts:update_profile' user.username %} ">
-                                  <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
-                              </a>
+                            <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                           {% endif %}
-                            </a>
                         </div>
                       </div>
                       <div class=" col-auto">
@@ -148,7 +161,7 @@
                     </div>
                 </div>
                 <div class="row col-8 justify-content-end mr-1">
-                    <button type="submit" class="btn btn-success">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
               </div>
             </form>

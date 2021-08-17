@@ -41,19 +41,19 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link"  href="{% url 'core:home' %}">
+                    <a class="nav-link"  href="{% url 'core:events' %}">
                       <span data-feather="home"></span>
                       EVENTOS
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:home' %}">
+                    <a class="nav-link" href="{% url 'career:list_career' %}">
                       <span data-feather="file"></span>
                       CARGOS E CARREIRAS
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:home' %}">
+                    <a class="nav-link" href="{% url 'core:team' %}">
                       <span data-feather="file"></span>
                       EQUIPE
                     </a>
@@ -100,46 +100,6 @@
                           </p>
                       </div>
                   </div>                        
-                  {% comment %} <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
-                      <div class="card-body">
-                          <h5 class="card-title">
-                              Projetos ativos
-                          </h5>
-                          <p class="card-text">
-                            <h1><i class="fas fa-play-circle"></i>  {{active_projects}} </h1>
-                          </p>
-                      </div>
-                  </div>                        
-                  <div class="card  m-2 p-2 col-auto" style="width: 18rem;">
-                      <div class="card-body">
-                          <h5 class="card-title">
-                              Projetos Concluídos
-                          </h5>
-                          <p class="card-text">
-                            <h1><i class="fas fa-check-circle"></i>  {{done_projects}} </h1>
-                          </p>
-                      </div>
-                  </div>                        
-                  <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
-                      <div class="card-body">
-                          <h5 class="card-title">
-                              Projetos Inativos
-                          </h5>
-                          <p class="card-text">
-                            <h1 ><i class="fas fa-ban"></i>  {{inactive_projects}} </h1>
-                          </p>
-                      </div>
-                  </div>                        
-                  <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
-                      <div class="card-body">
-                          <h5 class="card-title">
-                              Metodologias
-                          </h5>
-                          <p class="card-text ">
-                            <h1 ><i class="fas fa-list-ol"></i>  {{ methodologies  }}</h1>
-                          </p>
-                      </div>
-                  </div>                         {% endcomment %}
                   <div class="card  m-2 p-2  col-auto" style="width: 18rem;">
                       <div class="card-body">
                           <h5 class="card-title">
@@ -199,7 +159,7 @@
                         <label>cargo</label>
                       </div>
                       <div class="ml-1">
-                        {{user.user_profile.occupation.name}}
+                        {% comment %} {{user.user_profile.occupation.name}} {% endcomment %}
                       </div>
                     </div>
                   </div>
