@@ -1,3 +1,4 @@
+from datetime import datetime
 from accounts import models
 from django.forms.models import inlineformset_factory
 from career.models import Occupation, Skill
@@ -6,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.apps import apps
 
 from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile
-from .forms import ActionPlanStatusForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
+from .forms import ActionPlanStatusForm, MeetingEvaluationForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
 
 @login_required(login_url='/accounts/login/')
 def home(request):
@@ -319,4 +320,36 @@ def show_team(request):
             pdi_meetings.append(follower_pdi)
     context['pdi_meetings'] = pdi_meetings
     context['followers'] = followers
+    return render(request, template_name=template, context=context)
+
+
+
+def meeting_evaluation(request, meeting_id, meeting_type):
+    pdi_meeting = None
+    one_on_one = None
+    template = 'core/meeting_evaluation.html'
+    context = {}
+    profile = UserProfile.objects.get(user=request.user)
+    if meeting_type == 'one_on_one':
+        one_on_one = OneOnOneMeeting.objects.get(id=meeting_id)
+    else:
+        pdi_meeting = PdiMeeting.objects.get(id=meeting_id)
+
+    if (request.method == 'POST'):     
+        form = MeetingEvaluationForm(request.POST, request.FILES)
+        if form.is_valid():
+            saved_form = form.save(commit=False)
+            saved_form.user_profile = profile
+            saved_form.pdi_meeting  = pdi_meeting
+            saved_form.one_on_one   = one_on_one
+            saved_form.date_time    = datetime.now()
+            saved_form.save()
+        return redirect('core:events')
+
+    form = MeetingEvaluationForm()
+    context['form']  = form
+    context['emojis'] = [(1,128557),(2,128552),(3,128560),(4,128551),(5,128543),(6,128542),(7,128533),(8,128524),(9,128521),(10,128540),(11,128578),(12,128522),(13,128526),(14,128513),(15,129321)]
+    context['pdi_meeting']  = pdi_meeting
+    context['one_on_one']   = one_on_one
+    context['score_loop']   = range(1,11)
     return render(request, template_name=template, context=context)

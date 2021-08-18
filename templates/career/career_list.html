@@ -55,11 +55,11 @@
         <div class="col-md-10 ms-sm-auto col-lg-12 col-xl-12 ">
             <h1>Plano de Cargos e Carreira</h1>
             <div class="pt-3 pb-2 mb-3">
-                <a type="button" class="btn btn-success" href="{% url 'career:add_occupation' %}">Adicionar Metodologia</a>
+                <a type="button" class="btn btn-primary" href="{% url 'career:add_occupation' %}">Adicionar Cargo</a>
             </div>
            
-            <div class="container">
-                <div class="row justify-content-evenly align-items-start ">
+            <div class="col">
+                {% comment %} <div class="row justify-content-evenly align-items-start ">
                     {% for data in occupations_and_skills %}
                         <div class="card col-auto m-4 p-1">
                             <div class="card-body">
@@ -74,16 +74,53 @@
                                 </ul>
                                 <div class="card-footer row justify-content-between">
                                     <div class="col-xs  p-1">
-                                        <a class="btn btn-success" href="{% url 'career:edit_occupation' data.occupation.id %}">Editar</a>
+                                        <a class="btn btn-primary" href="{% url 'career:edit_occupation' data.occupation.id %}">Editar</a>
                                     </div>
                                     <div class="col-xs p-1">
-                                        <a class="btn btn-warning confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton-{{ data.occupation.id }}" href="{% url 'career:delete_occupation' data.occupation.id %}">Excluir</a>
+                                        <a class="btn btn-secondary confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton-{{ data.occupation.id }}" href="{% url 'career:delete_occupation' data.occupation.id %}">Excluir</a>
                                     </div>
                                 </div>
                             </div>        
                         </div>
                     {% endfor %}
-                </div>
+                </div> {% endcomment %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Cargo</th>
+                      <th scope="col">Subnível</th>
+                      <th scope="col">Descrição</th>
+                      <th scope="col">Habilidades</th>
+                      <th scope="col">Editar</th>
+                    </tr>
+                  </thead>
+                  <tbody> 
+                  {% for data in occupations_and_skills %}
+                    <tr>
+                      <th scope="row">{{ data.occupation.id }}</th>
+                      <td>{{ data.occupation.name }} {{ data.occupation.level }}</td>
+                      <td>{{ data.occupation.tier }}</td>
+                      <td>{{ data.occupation.description }}</td>
+                      <td>
+                      {%for skill in data.skills %}
+                        <li class="list-group-item">{{skill.name}} - {{ skill.description }}</li>
+                      {% endfor %}
+                      </td>
+                      <td>
+                        <div class="row justify-content-center" style="text-align:center">
+                            <div class="col p-1" >
+                                <a class="btn btn-primary" href="{% url 'career:edit_occupation' data.occupation.id %}">Editar</a>
+                            </div>
+                            <div class="col p-1">
+                                <a class="btn btn-secondary confirm-delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton-{{ data.occupation.id }}" href="{% url 'career:delete_occupation' data.occupation.id %}">Excluir</a>
+                            </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
             </div>
 
         </div>

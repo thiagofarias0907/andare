@@ -53,10 +53,7 @@
 {% block main %}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="col-md-10 ms-sm-auto col-lg-12 col-xl-12 ">
-            <h1>Plano de Cargos e Carreira</h1>
-            <div class="pt-3 pb-2 mb-3">
-                <a type="button" class="btn btn-success" href="{% url 'career:add_occupation' %}">Adicionar Metodologia</a>
-            </div>
+            <h1>Adicionar Cargo</h1>
            
             <div class="container">
               <form method='POST' action=".">
@@ -71,7 +68,7 @@
                       {{formset}} {% endcomment %}
 
                       <div class='subtitle'>
-                        CARGO
+                        DETALHAMENTO DO CARGO
                       </div>
                       <div class="row row-flex justify-content-between">
                       {% for item in form %}

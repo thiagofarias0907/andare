@@ -1,4 +1,4 @@
-from core.models import ActionPlan, OneOnOneMeeting, PdiMeeting, PdiPlan
+from core.models import ActionPlan, MeetingEvaluation, OneOnOneMeeting, PdiMeeting, PdiPlan
 from django import forms
 
 class OneOnOneMeetingForm(forms.ModelForm):
@@ -69,3 +69,14 @@ class BasePdiPlanFormset(forms.BaseInlineFormSet):
         return result
 
 PdiPlanFormset = forms.inlineformset_factory(PdiMeeting, PdiPlan, formset=BasePdiPlanFormset, exclude=(), can_delete=True, extra=0, min_num=1, max_num=5)
+
+
+class MeetingEvaluationForm(forms.ModelForm):
+    class Meta:
+        model = MeetingEvaluation
+        verbose_name = 'Formulário Avaliação Reunião'
+        exclude = ['one_on_one','pdi_meeting','user_profile','date_time']
+        widgets = {
+          'commentary': forms.Textarea(attrs={'rows':3, 'cols':200}),
+        }
+

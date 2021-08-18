@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from accounts.models import UserProfile
 from django.db import models
 from django.db.models.base import Model
@@ -77,3 +77,12 @@ class ActionPlan(models.Model):
     status      = models.SmallIntegerField(choices=STATUS_CHOICES)
     pdi_plan    = models.ForeignKey(PdiPlan, on_delete=models.CASCADE)
     
+class MeetingEvaluation(models.Model):
+    EMOJI_CHOICES = [(1,'&#128557;'),(2,'&#128552;'),(3,'&#128560;'),(4,'&#128551;'),(5,'&#128543;'),(6,'&#128542;'),(7,'&#128533;'),(8,'&#128524;'),(9,'&#128521;'),(10,'&#128540;'),(11,'&#1F642;'),(12,'&#129321;')]
+    feeling = models.SmallIntegerField()
+    score = models.SmallIntegerField()
+    commentary = models.TextField(max_length=300, null=True)
+    one_on_one = models.ForeignKey(OneOnOneMeeting, on_delete=models.CASCADE, null=True, related_name='one_on_one')
+    pdi_meeting = models.ForeignKey(PdiMeeting, on_delete=models.CASCADE, null=True, related_name='pdi_meeting')
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='user_profile')
+    date_time = models.DateTimeField(default=datetime.now)

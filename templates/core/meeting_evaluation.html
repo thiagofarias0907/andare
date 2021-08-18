@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{%block head %}
+  <link rel="stylesheet" href="{% static '/css/pdi.css' %}"/>
+{%endblock head%}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{% url 'core:home' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+<div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="row justify-content-center col-md-9 ms-sm-auto col-lg-10 col-xl-12">
+    <div class="col-12 mb-5">        
+    </div>
+    <div class="col-9">
+      <div class="card">
+        <div class="card-body">
+          <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.management_form }}
+            {{ form.non_form_errors }}
+            <div class="row row-flex justify-content-center">     
+              <div class ="col-12" >
+                <h4>O que você achou da reunião?</h4>
+              </div>
+            </div>
+            <div class="col">
+              <label for="{{ leader.username.id_for_label }}" class="form-section-title">QUal é o seu sentimento sobre o discutido?</label>
+              <div class="row justify-content-between align-items-center m-1">
+                <div class="row">
+                    {% for emoji in emojis %}
+                      <div class="col row" style="text-align:center">
+                        <div class="col-12" >
+                          <label for='id_feeling{{emoji.0}}'>&#{{emoji.1}};</label>
+                        </div>
+                        <div class="col-12">
+                          <input id='id_feeling{{emoji.0}}'  style="display:none" name='feeling' type='radio' value='{{emoji.0}}'> 
+                        </div>
+                      </div>
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <label for="{{ leader.username.id_for_label }}" class="form-section-title">Quão Satisfeito Ficou?</label>
+              <div class="row justify-content-between align-items-center m-1">
+                <div class="row">
+                  <div class="btn-group" role="group" aria-label="First group">
+                    {% for i in score_loop %}
+                        <label class="btn btn-primary" for="id_score{{i}}" >{{i}}</label>
+                        <input type='radio' class="btn-check" style="display:none" name='score' id='id_score{{i}}' value="{{i}}"  autocomplete="off"> 
+                      {% comment %} <div class="col row" style="text-align:center">
+                        <div class="col-12">
+                          <input id='id_score' name='score' type='button' value='{{i}}'> 
+                        </div>
+                      </div> {% endcomment %}
+                    {% endfor %}
+                  </div>  
+                </div>
+              </div>
+            </div>
+            <div class="col-12 row">
+              <div class="col-12">
+                <label for="{{ leader.username.id_for_label }}" class="form-section-title">Comentários</label>
+              </div>
+              <div class="row justify-content-between align-items-center m-1">
+                <div class="col-12">
+                  {{form.commentary | add_class:"form-control" | attr:"required=false"}}
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-between">
+              <div class="row col-12 justify-content-center mr-1">
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main %}
+{% block footer %}
+{% endblock footer %}

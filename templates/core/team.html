@@ -101,12 +101,12 @@
                       {%if meeting.follower == follower_profile%}
                       <div class="row row-flex">
                         {% for plan in meeting.pdi_plans %}
-                          <div class="col-3 ">
+                          <div class="col-3">
                             <div class="rounded-square small row align-items-center justify-content-center">
                               {{forloop.counter}}
                             </div>
                           </div>
-                          <div class="col" >
+                          <div class="col-9  mb-3" >
                             <div class="row row-flex justify-content-start">
                               <div class="col-12 p-0  title secondary">
                                 {{plan.plan.get_plan_type_display}}
