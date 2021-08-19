@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{% url 'core:home' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+<div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="row justify-content-start col-md-9 ms-sm-auto col-lg-10 col-xl-12 ">
+      
+    <h1>Minhas Reuniões</h1>
+    <div class="col-12 mb-5">        
+    {% include 'partials/messages.html' %}
+    </div>
+    <div class="col-12 ">
+      <div class="row row-flex align-items-between ">
+        <div class="col-12 row row-flex justify-content-center p-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Quando</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody> 
+
+
+              {% for meeting in one_on_ones %}
+              <tr>
+                <th scope="col">{{meeting.id}}</th>
+                <th scope="col">1 : 1</th>
+                <th scope="col">{{meeting.date_time}}</th>
+                <th scope="col">
+                  <div class="row justify-content-center" style="text-align:center">
+                    <div class="col p-1" >
+                        <a class="btn btn-outline-primary" href="{% url 'core:detail_one_on_one' meeting.id %}">Visualizar</a>
+                    </div>
+                    {%if meeting in evaluations %}
+                      <div class="col p-1" >
+                          <a class="btn btn-secondary disabled" tabindex="-1" href="{% url 'core:meeting_evaluation' 'one_on_one' meeting.id %}">Avaliar</a>
+                      </div>
+                    {%else%}
+                      <div class="col p-1" >
+                          <a class="btn btn-primary" href="{% url 'core:meeting_evaluation' 'one_on_one' meeting.id %}">Avaliar</a>
+                      </div>
+                    {%endif%}
+                  </div>
+                </th>
+              </tr>
+              {%endfor%}
+              {% for meeting in pdi_meetings %}
+              <tr>
+                <th scope="col">{{meeting.id}}</th>
+                <th scope="col">PDI</th>
+                <th scope="col">{{meeting.date_time}}</th>
+                <th scope="col">
+                  <div class="row justify-content-center" style="text-align:center">
+                      <div class="col p-1" >
+                          <a class="btn btn-outline-primary" href="{% url 'core:detail_pdi_meeting' meeting.id %}">Visualizar</a>
+                      </div>
+                    {%if meeting in evaluations %}
+                      <div class="col p-1" >
+                          <a class="btn btn-secondary disabled" tabindex="-1" href="{% url 'core:meeting_evaluation' 'pdi_meeting' meeting.id %}">Avaliar</a>
+                      </div>
+                    {%else%}
+                      <div class="col p-1" >
+                          <a class="btn btn-primary" href="{% url 'core:meeting_evaluation' 'pdi_meeting' meeting.id %}">Avaliar</a>
+                      </div>
+                    {%endif%}
+                  </div>
+                </th>
+              </tr>
+              {%endfor%}
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main %}
+{% block footer %}
+{% endblock footer %}

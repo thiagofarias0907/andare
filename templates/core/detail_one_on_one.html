@@ -54,57 +54,53 @@
 <div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
   <div class="row justify-content-center col-md-9 ms-sm-auto col-lg-10 col-xl-12">
       <div class="col-12 mb-5">
-        <h1>Registrar Reunião 1:1</h1>
-        
-      {% include 'partials/messages.html' %}
-      </div>
+        <h1>Reunião 1:1</h1>
+        </div>
       <div class="col-9">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action=".">
-                {% csrf_token %}
                 <div class="row row-flex justify-content-center  p-3 pb-5">
                     <div class="col-6 row justify-content-start" >
                       <div class="col-12">
-                        <label for="{{ follower.username.id_for_label }}" class="form-label">COLABORADOR</label>
+                        <label class="form-label">COLABORADOR</label>
                       </div>
-                      {% if follower %}
+                      {% if  meeting.follower %}
                       <div class="col-3">
                         <div class="profile-container-squared">
-                          {% if follower.picture %}
-                            <img src="{{ follower.picture.url }}" alt="profile_pic">
+                          {% if  meeting.follower.picture %}
+                            <img src="{{ meeting.follower.picture.url }}" alt="profile_pic">
                           {% else %}
                             <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                           {% endif %}
                         </div>
                       </div>
                       <div class="col-auto">
-                        <span style="font-size:2em">{{ follower.user.first_name }} </span>
-                        <br>{{ follower.user.last_name }}
+                        <span style="font-size:2em">{{  meeting.follower.user.first_name }} </span>
+                        <br>{{  meeting.follower.user.last_name }}
                       </div>
                       {% else %}
-                        {{ form.follower|add_class:"form-control" }}
-                        {% if form.follower != 0 %} 
-                          {{ form.follower__occupation }}
+                        {{  meeting.follower|add_class:"form-control" }}
+                        {% if  meeting.follower != 0 %} 
+                          {{  meeting.follower__occupation }}
                         {% endif %}
                       {%endif%}
                     </div>
                     <div class="col-6 row justify-content-start">
                       <div class="col-12">
-                       <label for="{{ leader.username.id_for_label }}" class="form-label">LÍDER</label>
+                       <label class="form-label">LÍDER</label>
                       </div>
                       <div class="col-3">
                         <div class="profile-container-squared">
-                          {% if user.user_profile.picture %}
-                            <img src="{{ user.user_profile.picture.url }}" alt="profile_pic">
+                          {% if  meeting.leader.picture %}
+                            <img src="{{  meeting.leader.picture.url }}" alt="profile_pic">
                           {% else %}
                             <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                           {% endif %}
                         </div>
                       </div>
                       <div class=" col-auto">
-                        <span style="font-size:2em">{{ user.first_name }} </span>
-                        <br>{{ user.last_name }}
+                        <span style="font-size:2em">{{  meeting.leader.user.first_name }} </span>
+                        <br>{{  meeting.leader.user.last_name }}
                       </div>
                     </div>
                 </div>
@@ -114,62 +110,56 @@
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
                         </div>
-                        <div for="{{ form.subject_one.id_for_label }}" class="col-11">
-                            {{ form.subject_one | add_class:"form-control"}}
+                        <div for="{{ subject_one.id_for_label }}" class="col-11">
+                            {{ meeting.subject_one }}
                         </div>
                     </div>
                     <div class="row row-flex mb-2 justify-content-fill">
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
                         </div>
-                        <div for="{{ form.subject_two.id_for_label }}"  class="col-11">
-                            {{ form.subject_two | add_class:"form-control"}}
+                        <div for="{{ subject_two.id_for_label }}"  class="col-11">
+                            {{ meeting.subject_two }}
                         </div>
                     </div>
                     <div class="row row-flex mb-2 justify-content-fill" >
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
                         </div>
-                        <div for="{{ form.subject_three.id_for_label }}"  class="col-11">
-                            {{ form.subject_three | add_class:"form-control"}}
+                        <div for="{{ subject_three.id_for_label }}"  class="col-11">
+                            {{ meeting.subject_three }}
                         </div>
                     </div>
                     <div class="row row-flex mb-2 justify-content-fill">
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
                         </div>
-                        <div for="{{ form.subject_four.id_for_label }}"  class="col-11">
-                            {{ form.subject_four | add_class:"form-control"}}
+                        <div for="{{ subject_four.id_for_label }}"  class="col-11">
+                            {{ meeting.subject_four }}
                         </div>
                     </div>
                     <div class="row row-flex mb-2 justify-content-fill">
                         <div class="col-1">
                             <div class="form-label" style="background-color:#000000; border-radius:50%; width:10px; height:10px; margin:10px 0 0 20px"></div>
                         </div>
-                        <div for="{{ form.subject_five.id_for_label }}"  class="col-11">
-                            {{ form.subject_five | add_class:"form-control"}}
+                        <div for="{{ subject_five.id_for_label }}"  class="col-11">
+                            {{ meeting.subject_five }}
                         </div>
                     </div>
                 </div>
               <div class="row justify-content-between">
                 <div class="col-4 row">
-                    <div for="{{ form.date.id_for_label }}" class="date col-6" >
+                    <div for="{{ date.id_for_label }}" class="date col-6" >
                     <label class="form-label">Próxima Data</label>
-                        {{ form.next_meeting_date | add_class:"form-control"  }}
+                        {{  meeting.next_meeting_date   }}
                     </div>
                     
-                    <div for="{{ form.frequency.id_for_label }}"class="date col-6">
+                    <div for="{{ frequency.id_for_label }}"class="date col-6">
                     <label class="form-label">Período</label>
-                        {{ form.meetings_frequency | add_class:"form-control" }}
+                        {{ meeting.get_meetings_frequency_display  }}
                     </div>
-                </div>               
-                <div class="row col-8 justify-content-end align-items-end mr-1">
-                  <div class="">
-                      <button type="submit" class="btn btn-primary">Salvar</button>
-                  </div>
-                </div>
+                </div> 
               </div>
-            </form>
           </div>
         </div>
       </div>

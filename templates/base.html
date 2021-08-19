@@ -52,12 +52,14 @@
                       CARGOS E CARREIRAS
                     </a>
                   </li>
+                  {% if user.user_profile.profile == 2 %}
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:team' %}">
-                      <span data-feather="file"></span>
-                      EQUIPE
-                    </a>
+                      <a class="nav-link" href="{% url 'core:team' %}">
+                        <span data-feather="file"></span>
+                        EQUIPE
+                      </a>
                   </li>
+                  {%endif%}
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'core:home' %}">
                       <span data-feather="file"></span>

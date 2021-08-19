@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
 
-from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile
+from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile, MeetingEvaluation
 from .forms import ActionPlanStatusForm, MeetingEvaluationForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
 
 @login_required(login_url='/accounts/login/')
@@ -82,6 +82,12 @@ def update_one_on_one(request, leader_username, follower_username):
     context['form'] = form
     return render(request, template_name=template, context=context)
 
+def detail_one_on_one(request, id_meeting):
+    template = 'core/detail_one_on_one.html'
+    context = {}
+    oneonone_meeting = OneOnOneMeeting.objects.get(id= id_meeting)
+    context['meeting'] = oneonone_meeting
+    return render(request, template_name=template, context=context)
 
 
 # def pdi_meeting(request, follower_username):
@@ -221,6 +227,20 @@ def edit_pdi_meeting(request, follower_username):
     return render(request, template_name=template, context=context)
 
 
+def detail_pdi_meeting(request, id_meeting):
+    template = 'core/detail_pdi_meeting.html'
+    context = {}
+    pdi_meeting = PdiMeeting.objects.get(id=id_meeting)
+    pdi_plans = PdiPlan.objects.filter(pdi_meeting=pdi_meeting)
+    plans = []
+    for plan in pdi_plans:
+        plans.append((plan, ActionPlan.objects.filter(pdi_plan=plan)))
+    
+    context['pdi_meeting'] = pdi_meeting
+    context['plans'] = plans
+    return render(request, template_name=template, context=context)
+
+
 def pdi_meeting_evaluate(request, follower_username):
     template = 'core/pdi_meeting_evaluate.html'
     context = {}
@@ -282,9 +302,26 @@ def pdi_meeting_evaluate(request, follower_username):
 
 @login_required(login_url='/accounts/login/')
 def list_events(request):
-    template = 'core/events.html'
     context = {}
-    user      = UserProfile.objects.get(user=request.user)
+    user    = UserProfile.objects.get(user=request.user)
+
+    if user.profile == 1:
+        template = 'core/follower_events.html'
+        oneonone_meetings = OneOnOneMeeting.objects.filter(follower=user)
+        pdi_meetings = PdiMeeting.objects.filter(follower=user)
+        evaluations = MeetingEvaluation.objects.filter(user_profile= user)
+        evaluated = []
+        for evaluation in evaluations:
+            if evaluation.pdi_meeting is None:
+                evaluated.append(evaluation.one_on_one)
+            else:
+                evaluated.append(evaluation.pdi_meeting)
+        context['evaluations'] = evaluated
+        context['one_on_ones'] = oneonone_meetings
+        context['pdi_meetings'] = pdi_meetings
+        return render(request, template_name=template, context=context)
+
+    template = 'core/events.html'
     oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user)
     pdi_meetings = PdiMeeting.objects.filter(leader=user)
     followers = []

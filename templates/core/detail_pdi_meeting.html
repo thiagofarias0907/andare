@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+{%block head %}
+  <link rel="stylesheet" href="{% static '/css/pdi.css' %}"/>
+{%endblock head%}
+{% block navlink %}
+<div class="position-sticky pt-3">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link"   href="/">
+        <span data-feather="home"></span>
+        INÍCIO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{% url 'core:home' %}">
+        <span data-feather="home"></span>
+        EVENTOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CARGOS E CARREIRAS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        EQUIPE
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        RELATÓRIOS
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'core:home' %}">
+        <span data-feather="file"></span>
+        CONFIGURAÇÃO
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
+        <span data-feather="file"></span>
+        CONTROLE DE ACESSOS
+      </a>
+    </li>
+  </ul>
+</div>
+{%endblock navlink%}
+{% block main %}
+<div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 form-group border-bottom">
+  <div class="row justify-content-center col-md-9 ms-sm-auto col-lg-10 col-xl-12">
+      <div class="col-12 mb-5">        
+      {% include 'partials/messages.html' %}
+      </div>
+      <div class="col-9">
+        <div class="card">
+          <div class="card-body">
+                <div class="row row-flex justify-content-center">     
+                  <div class ="col-12" >
+                    <h4>Plano de Desenvolvimento Individual</h4>
+                    <p>{{ pdi_meeting.follower.user.first_name }} {{ pdi_meeting.follower.user.last_name }}</p>
+                  </div>
+                  <div class="col-2 align-center" >
+                    <div class="row justify-content-center">
+                      {% if pdi_meeting.follower.picture %}
+                          <img src="{{  pdi_meeting.follower.picture.url }}" class="profile-container-squared" alt="profile_pic">
+                      {% else %}
+                          <img src="{% static '/img/profile_default.png' %}" class="profile-container-squared" alt="profile_pic">
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="occupation col-4 align-items-center">
+                    <div class="icon">
+                    <i class="bi bi-award"></i>
+                    </div>
+                    <div class="description">
+                      {{ pdi_meeting.follower.occupation }}
+                    </div>
+                  </div>
+                  <div class="occupation col-4 align-items-center">
+                    <div class="icon"><i class="bi bi-speedometer"></i>
+                    </div>
+                    <div class="description">
+                      Nível {{ pdi_meeting.follower.occupation.tier }} 
+                    </div>
+                  </div>                                                   
+                </div>
+                <div class="">
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Objetivos</label>
+                  {%for item in form%}
+                    {% if item.name == 'career_tier_goal' or item.name == 'career_goal' %}
+                      {{item }}  
+                    {%else %}
+                      {{item }}
+                    {%endif%}
+                  {% endfor %}
+                  <div class="row justify-content-between align-items-center m-1">
+                    <div class="col-1">
+                        <div class="icon">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                    </div>
+                    <div class="col row">
+                        <div class="col-4" >
+                            {{ pdi_meeting.career_goal }}
+                        </div>
+                        <div class="col-4">
+                            Nível {{ pdi_meeting.career_tier_goal}}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <label for="{{ leader.username.id_for_label }}" class="form-section-title">Planos</label>
+                  {% for plan in plans %}
+                  <div class="row row-flex  mt-3">
+                    <div class="col-1">
+                      <div class="plan-number row align-items-center justify-content-center">
+                        {{forloop.counter}}
+                      </div>
+                    </div>
+                    <div class="col-11">
+                      <div class="row  col-12 plan-type">
+                        {% if plan.0.plan_type.value == 1  %}
+                          DESENVOLVER
+                        {% elif plan.0.plan_type.value == 2 %}
+                          APRIMORAR
+                        {% else %}
+                          REDUZIR
+                        {% endif %}
+                      </div>
+                      <div class="row col-12 plan-title">
+                        {{ plan.0.description }}
+                      </div>
+
+                      {% for action_plan in plan.1 %}                      
+                        <div class="row row-flex align-items-center  mb-3">
+                          <div class="col">
+                            {{ action_plan.description }}
+                          </div>
+                          <div class="col-2">
+                            {{ action_plan.due_date }}
+                          </div>
+                          <div class="col-5 row ">
+                              <div class='col'>
+                                <div class="row row-flex justify-content-center">
+                                  <div>
+                                    {{ action_plan.get_status_display }}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                          </div>
+                          
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {%endfor %}
+                </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock main %}
+{% block footer %}
+{% endblock footer %}

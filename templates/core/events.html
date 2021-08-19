@@ -109,7 +109,7 @@
                           <div class="col-6 row align-items-center justify-content-center ">
                             <div class="col">
                               <div class="col-12 mt-1 ml-1 p-0">
-                                <label class="title">1:1</label>
+                                <a href="{% url 'core:detail_one_on_one' meeting.id %}"><label class="title" style="cursor:pointer">1:1</label></a>
                               </div>
                             </div>
                           </div>
@@ -129,7 +129,7 @@
                           <div class="col-6 row row-flex justify-content-start">
                             <div class="col">
                               <div class="col-12 mt-1 ml-1 p-0">
-                                <label class="title secondary">pdi</label>
+                                <a href="{% url 'core:detail_pdi_meeting' meeting.id %}"><label class="title secondary" style="cursor:pointer">pdi</label></a>
                               </div>
                             </div>
                           </div>
