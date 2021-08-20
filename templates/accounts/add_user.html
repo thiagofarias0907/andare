@@ -12,41 +12,45 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link"  href="{% url 'core:home' %}">
+      <a class="nav-link"  href="{% url 'core:events' %}">
         <span data-feather="home"></span>
         EVENTOS
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
+      <a class="nav-link" href="{% url 'career:list_career' %}">
         <span data-feather="file"></span>
         CARGOS E CARREIRAS
       </a>
     </li>
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
-        <span data-feather="file"></span>
-        EQUIPE
-      </a>
+        <a class="nav-link" href="{% url 'core:team' %}">
+          <span data-feather="file"></span>
+          EQUIPE
+        </a>
     </li>
+    {%endif%}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
+      <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
         <span data-feather="file"></span>
         RELATÓRIOS
       </a>
     </li>
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a class="nav-link" href="{% url 'core:home' %}">
         <span data-feather="file"></span>
         CONFIGURAÇÃO
       </a>
-    </li>
+    </li> {% endcomment %}
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
-      <a class="nav-link active" href="{% url 'accounts:add_user' %}">
+      <a class="nav-link" href="{% url 'accounts:add_user' %}">
         <span data-feather="file"></span>
         CONTROLE DE ACESSOS
       </a>
     </li>
+    {%endif%}
   </ul>
 </div>
 {%endblock navlink%}
@@ -55,37 +59,61 @@
   <div class="col-md-9 ms-sm-auto col-lg-10 col-xl-12">
       <h1>Criar Usuário</h1>
       {% include 'partials/messages.html' %}
-      <div class="col-4">
-        <div class="card">
+      <div class="row justify-content-center">
+        <div class="card col-6">
           <div class="card-body">
+            {% csrf_token %}
             <form method="POST" action=".">
-              {% csrf_token %}
-              
-              <div class="form-group">
-                <label for="{{ form.first_name.id_for_label }}" class="form-label">Nome:</label>
-                {{ form.first_name|add_class:"form-control"|attr:"autofocus" }}
+            <div class="row row-flex">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="{{ form.first_name.id_for_label }}" class="form-label">Nome:</label>
+                  {{ form.first_name|add_class:"form-control"|attr:"autofocus" }}
+                </div>
+              </div>  
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="{{ form.last_name.id_for_label }}" class="form-label">Sobrenome:</label>
+                  {{ form.last_name|add_class:"form-control" }}
+                </div>
+              </div>  
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="{{ form.username.id_for_label }}" class="form-label">Nome de usuário:</label>
+                  {{ form.username|add_class:"form-control" }}
+                </div>
+              </div>  
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="{{ form.email.id_for_label }}" class="form-label">E-mail:</label>
+                  {{ form.email|add_class:"form-control" }}
+                </div>
+              </div>  
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="{{ form.password.id_for_label }}" class="form-label">Senha de acesso:</label>
+                  {{ form.password|add_class:"form-control"|attr:"type:password" }}
+                </div>
               </div>
-              <div class="form-group">
-                <label for="{{ form.last_name.id_for_label }}" class="form-label">Sobrenome:</label>
-                {{ form.last_name|add_class:"form-control" }}
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="{{ form.profile.id_for_label }}" class="form-label">Tipo de Perfil:</label>
+                    {{ form.profile |add_class:"form-control" }}
+                  </div>
+                </div>  
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="{{ form.occupation.id_for_label }}" class="form-label">Cargo:</label>
+                    {{  form.occupation|add_class:"form-control" }}
+                  </div>
+                </div>  
+                {%endfor%}
+              <div class="col-12 row justify-content-center">
+                <button type="submit" class="btn btn-primary">Cadastrar Usuário</button>
               </div>
-              <div class="form-group">
-                <label for="{{ form.username.id_for_label }}" class="form-label">Nome de usuário:</label>
-                {{ form.username|add_class:"form-control" }}
-              </div>
-              <div class="form-group">
-                <label for="{{ form.email.id_for_label }}" class="form-label">E-mail:</label>
-                {{ form.email|add_class:"form-control" }}
-              </div>
-              <div class="form-group">
-                <label for="{{ form.password.id_for_label }}" class="form-label">Senha de acesso:</label>
-                {{ form.password|add_class:"form-control"|attr:"type:password" }}
-              </div>
-  <!--            <div class="form-group form-check">-->
-  <!--              <input type="checkbox" class="form-check-input" id="Check1">-->
-  <!--              <label class="form-check-label" for="Check1">Check me out</label>-->
-  <!--            </div>-->
-              <button type="submit" class="btn btn-primary">Cadastrar Usuário</button>
+            </div>
             </form>
           </div>
         </div>

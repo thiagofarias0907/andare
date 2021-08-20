@@ -1,4 +1,5 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
+from time import time
 from accounts.models import UserProfile
 from django.db import models
 from django.db.models.base import Model
@@ -13,10 +14,10 @@ class OneOnOneMeeting(models.Model):
     follower = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='one_follower_profile')
     leader   = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='one_leader_profile')
     subject_one = models.CharField(help_text='Insira um tópico da reunião', max_length=255)
-    subject_two = models.CharField(help_text='Insira um tópico da reunião', max_length=255)
-    subject_three = models.CharField(help_text='Insira um tópico da reunião', max_length=255)
-    subject_four = models.CharField(help_text='Insira um tópico da reunião', max_length=255)
-    subject_five = models.CharField(help_text='Insira um tópico da reunião', max_length=255)
+    subject_two = models.CharField(help_text='Insira um tópico da reunião', max_length=255, null=True, blank=True)
+    subject_three = models.CharField(help_text='Insira um tópico da reunião', max_length=255, null=True, blank=True)
+    subject_four = models.CharField(help_text='Insira um tópico da reunião', max_length=255, null=True, blank=True)
+    subject_five = models.CharField(help_text='Insira um tópico da reunião', max_length=255, null=True, blank=True)
     next_meeting_date = models.DateField(default=date.today) #default=timezone.now, 
     meetings_frequency = models.SmallIntegerField(choices=FREQUENCY_CHOICES, default=1)
     date_time = models.DateTimeField(auto_now=True) #default=timezone.now 
@@ -42,16 +43,8 @@ class PdiMeeting(models.Model):
     interest_three = models.CharField(help_text='Insira um tema de interesse', max_length=120, null=True)
     interest_four = models.CharField(help_text='Insira um tema de interesse' , max_length=120, null=True)
 
-    # pdi_plans = models.ManyToManyField(PdiPlan)
-
-    # plan_description = models.CharField(max_length=120)
-    # plan_type = models.SmallIntegerField(choices=TYPE_CHOICES)
-    # plan_action = models.CharField(max_length=120)
-
-    # plan_action_due_date = models.DateField(default=date.today)  
-    # plan_action_status = models.SmallIntegerField(choices=TYPE_CHOICES)
-
-    date_time = models.DateTimeField(auto_now=True)  
+    date_time  = models.DateTimeField(auto_now=True)  
+    next_meeting = models.DateField(default=datetime.today()+timedelta(days=90))
 
     class Meta:
         verbose_name= 'Reunião 1:1'

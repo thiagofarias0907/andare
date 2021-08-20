@@ -6,7 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('one_on_one/', views.one_on_one, name='one_on_one'),
+    # path('one_on_one/', views.one_on_one, name='one_on_one'),
     path('one_on_one/<follower>', views.one_on_one_follower, name='one_on_one_follower'),
     path('one_on_one/detail/<id_meeting>', views.detail_one_on_one, name='detail_one_on_one'),
     path('one_on_one/<leader_username>/<follower_username>', views.update_one_on_one, name='update_one_on_one'),

@@ -12,41 +12,45 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active"  href="{% url 'core:home' %}">
+      <a class="nav-link active"  href="{% url 'core:events' %}">
         <span data-feather="home"></span>
         EVENTOS
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
+      <a class="nav-link" href="{% url 'career:list_career' %}">
         <span data-feather="file"></span>
         CARGOS E CARREIRAS
       </a>
     </li>
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
-        <span data-feather="file"></span>
-        EQUIPE
-      </a>
+        <a class="nav-link" href="{% url 'core:team' %}">
+          <span data-feather="file"></span>
+          EQUIPE
+        </a>
     </li>
+    {%endif%}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
+      <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
         <span data-feather="file"></span>
         RELATÓRIOS
       </a>
     </li>
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a class="nav-link" href="{% url 'core:home' %}">
         <span data-feather="file"></span>
         CONFIGURAÇÃO
       </a>
-    </li>
+    </li> {% endcomment %}
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
       <a class="nav-link" href="{% url 'accounts:add_user' %}">
         <span data-feather="file"></span>
         CONTROLE DE ACESSOS
       </a>
     </li>
+    {%endif%}
   </ul>
 </div>
 {%endblock navlink%}
@@ -61,7 +65,7 @@
       <div class="col-9">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action=".">
+            <form method="POST" action="{{follower.user.username}}">
                 {% csrf_token %}
                 <div class="row row-flex justify-content-center  p-3 pb-5">
                     <div class="col-6 row justify-content-start" >
@@ -76,6 +80,7 @@
                           {% else %}
                             <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                           {% endif %}
+                          <div class="invisible" id="id_follower" value="{{follower.id}}"></div>
                         </div>
                       </div>
                       <div class="col-auto">

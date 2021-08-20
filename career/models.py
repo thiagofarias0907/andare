@@ -9,7 +9,6 @@ class Occupation(models.Model):
     level = models.SmallIntegerField('Nível')
     tier = models.SmallIntegerField('Subnível')
     description = models.CharField('Descrição', null=True, max_length = 200)
-    # skills = models.ManyToManyField(Skill, related_name='skill')
 
     class Meta:
         verbose_name = "Cargo"
@@ -17,6 +16,13 @@ class Occupation(models.Model):
 
     def __str__(self):
         return self.name
+
+    def initials(self):
+        initials = self.name[0:2]
+        words = self.name.split() 
+        if len(words) > 1:
+            initials = words[0][0].upper()+ words[1][0].upper()
+        return initials
 
 class Skill(models.Model):
     name = models.CharField('Habilidade', max_length = 100)

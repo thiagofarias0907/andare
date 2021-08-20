@@ -7,28 +7,35 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 
-from .forms import UserForm, UserProfileForm, UserProfilePictureForm
+from .forms import UserForm, UserProfileForm, UserProfilePictureForm, UserFormset
 
-# Create your views here.
 from .models import UserProfile
 
+from core.views import get_next_events
 
 def add_user(request):
     template = 'accounts/add_user.html'
-    context = {}
+    context = get_next_events(user=request.user)
+    creator = UserProfile.objects.get(user= request.user)
     if request.method == 'POST':
         form = UserForm(request.POST)
-        if form.is_valid():
+        formset = UserFormset(request.POST, request.FILES, prefix='formset')
+        if form.is_valid() and formset.is_valid():
             f = form.save(commit=False)
             f.set_password(f.password)
             f.save()
-            user_profile = UserProfile.objects.create(user=User.objects.get(username=f.username))
-            user_profile.save()
+            for form in formset:
+                saved_profile_form = form.save(commit=False)
+                saved_profile_form.creator = creator
+                saved_profile_form.user = f
+                saved_profile_form.save()
             messages.success(request,"Usuário cadastrado com sucesso!")
         else:
             messages.error(request, "Falha no cadastro de usuário!")
     form = UserForm()
+    formset = UserFormset(prefix='formset')
     context['form'] = form
+    context['formset'] = formset
     return render(request, template, context)
 
 def user_login(request):
@@ -54,7 +61,7 @@ def user_logout(request):
 @login_required(login_url='/accounts/login/')
 def user_change_password(request):
     template = 'accounts/user_change_password.html'
-    context = {}
+    context = get_next_events(user=request.user)
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
@@ -70,7 +77,7 @@ def user_change_password(request):
 @login_required(login_url='/accounts/login/')
 def change_user_profile(request):
     template = 'accounts/change_user_profile.html'
-    context = {}
+    context = get_next_events(user=request.user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -87,7 +94,7 @@ def change_user_profile(request):
 @login_required(login_url='/accounts/login/')
 def update_user_profile_picture(request, username):
     template = 'accounts/change_user_profile.html'
-    context = {}
+    context = get_next_events(user=request.user)
     profile = UserProfile.objects.get(user__username=username)
     if request.method == 'POST':
         form = UserProfilePictureForm(request.POST, request.FILES, instance=profile)
@@ -104,7 +111,7 @@ def update_user_profile_picture(request, username):
 @login_required(login_url='/accounts/login/')
 def profile(request, username):
     template = 'accounts/profile.html'
-    context = {}
+    context = get_next_events(user=request.user)
     profile = UserProfile.objects.get(user__username=username)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
@@ -118,4 +125,5 @@ def profile(request, username):
     form = UserProfileForm(instance=profile)
     context['form'] = form
     context['username'] = username
+    context['profile_type'] = profile.profile
     return render(request,template,context)

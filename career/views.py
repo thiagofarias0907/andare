@@ -3,11 +3,13 @@ from career.forms import OccupationForm, SkillFormset
 from django.http import request
 from django.shortcuts import redirect, render, get_object_or_404
 
+from core.views import get_next_events
+
 # Create your views here.
 
 def add_occupation(request):
     template = 'career/occupation.html'
-    context = {}
+    context = get_next_events(user=request.user)
     if (request.method == 'POST'):
         occupation_form = OccupationForm(request.POST)
         skill_formset = SkillFormset(request.POST, request.FILES, prefix='skillformset')
@@ -30,7 +32,7 @@ def add_occupation(request):
 
 def edit_occupation(request, occupation_id):
     template = 'career/occupation.html'
-    context = {}
+    context = get_next_events(user=request.user)
     occupation = Occupation.objects.get(id=occupation_id)
     skills = Skill.objects.filter(occupation= occupation)
     skill_formset = SkillFormset(prefix='skillformset', instance=occupation)
@@ -50,7 +52,7 @@ def edit_occupation(request, occupation_id):
 
 def list_all(request):
     template = 'career/career_list.html'
-    context = {}
+    context = get_next_events(user=request.user)
     occupations = Occupation.objects.all()
     occupations_and_skills = []
     for occupation in occupations:

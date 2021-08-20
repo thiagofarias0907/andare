@@ -5,29 +5,33 @@ from career.models import Occupation, Skill
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
+from django.db.models import Q
 
 from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile, MeetingEvaluation
 from .forms import ActionPlanStatusForm, MeetingEvaluationForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
 
+
+def get_next_events(user):
+    events = {}
+    user   = UserProfile.objects.get(user=user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user).filter(next_meeting_date__gt = datetime.now())
+    pdi_meetings = PdiMeeting.objects.filter(Q(leader=user)| Q(follower=user)).filter(next_meeting__gt = datetime.today() )
+    events['next_oneonone_meetings'] = oneonone_meetings
+    events['next_pdi_meetings'] = pdi_meetings
+    return events
+
 @login_required(login_url='/accounts/login/')
 def home(request):
     template = 'base.html'
-    context = {}
-    leader   = UserProfile.objects.get(user=request.user)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-    context['one_on_ones'] = oneonone_meetings
-    context['pdi_meetings'] = pdi_meetings
+    context = get_next_events(user=request.user)
+
     return render(request, template_name=template, context=context)
 
 def one_on_one(request):
     template = 'core/one_on_one.html'
-    context = {}
+    context = get_next_events(user=request.user)
     leader   = UserProfile.objects.get(user=request.user)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-    context['one_on_ones'] = oneonone_meetings
-    context['pdi_meetings'] = pdi_meetings
+    
     if (request.method == 'POST'):     
         form = OneOnOneMeetingForm(request.POST)
         if form.is_valid():
@@ -42,20 +46,18 @@ def one_on_one(request):
 
 def one_on_one_follower(request, follower):
     template = 'core/one_on_one.html'
-    context = {}
+    context = get_next_events(user=request.user)
     leader   = UserProfile.objects.get(user=request.user)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-    context['one_on_ones'] = oneonone_meetings
-    context['pdi_meetings'] = pdi_meetings
+    follower_profile = UserProfile.objects.get(user__username= follower)
+
     if (request.method == 'POST'):     
         form = OneOnOneMeetingForm(request.POST)
         if form.is_valid():
             f = form.save(commit=False)
             f.leader = leader
+            f.follower = follower_profile
             f.save()
             return redirect('/events')
-    follower_profile = UserProfile.objects.get(user__username= follower)
     form = OneOnOneMeetingForm(instance=leader)
     context['follower'] = follower_profile
     context['form'] = form
@@ -63,13 +65,10 @@ def one_on_one_follower(request, follower):
 
 def update_one_on_one(request, leader_username, follower_username):
     template = 'core/one_on_one.html'
-    context = {}
+    context = get_next_events(user=request.user)
     leader   = UserProfile.objects.get(user__username=leader_username)
     follower = UserProfile.objects.get(user__username=follower_username)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-    context['one_on_ones'] = oneonone_meetings
-    context['pdi_meetings'] = pdi_meetings
+    
     if (request.method == 'POST'):
         form = OneOnOneMeetingForm(request.POST, instance=[leader, follower])
         if form.is_valid():
@@ -84,7 +83,7 @@ def update_one_on_one(request, leader_username, follower_username):
 
 def detail_one_on_one(request, id_meeting):
     template = 'core/detail_one_on_one.html'
-    context = {}
+    context = get_next_events(user=request.user)
     oneonone_meeting = OneOnOneMeeting.objects.get(id= id_meeting)
     context['meeting'] = oneonone_meeting
     return render(request, template_name=template, context=context)
@@ -92,7 +91,7 @@ def detail_one_on_one(request, id_meeting):
 
 # def pdi_meeting(request, follower_username):
 #     template = 'core/pdi_meeting.html'
-#     context = {}
+#     context = get_next_events(user=request.user)
 #     follower = UserProfile.objects.get(user__username=follower_username)
 #     leader = UserProfile.objects.get(user=request.user)
 #     oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
@@ -137,13 +136,10 @@ def detail_one_on_one(request, id_meeting):
 
 def pdi_meeting(request, follower_username):
     template = 'core/pdi_meeting.html'
-    context = {}
+    context = get_next_events(user=request.user)
     follower = UserProfile.objects.get(user__username=follower_username)
     leader = UserProfile.objects.get(user=request.user)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-    pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-    context['one_on_ones'] = oneonone_meetings
-    context['pdi_meetings'] = pdi_meetings
+    
     # pdi_meeting = PdiMeeting.objects.get_object_or_404(id= pdi_meeting_id)
     # pdi_plan_formset = PdiPlanFormset(instance=pdi_meeting)
     # pdi_plan_formset = PdiPlanFormset()
@@ -189,7 +185,7 @@ def pdi_meeting(request, follower_username):
 
 def edit_pdi_meeting(request, follower_username):
     template = 'core/pdi_meeting_update.html'
-    context = {}
+    context = get_next_events(user=request.user)
     follower = UserProfile.objects.get(user__username=follower_username)
     leader = UserProfile.objects.get(user=request.user)
     pdi_meeting = PdiMeeting.objects.filter(follower=follower).order_by('-date_time').first()
@@ -229,7 +225,7 @@ def edit_pdi_meeting(request, follower_username):
 
 def detail_pdi_meeting(request, id_meeting):
     template = 'core/detail_pdi_meeting.html'
-    context = {}
+    context = get_next_events(user=request.user)
     pdi_meeting = PdiMeeting.objects.get(id=id_meeting)
     pdi_plans = PdiPlan.objects.filter(pdi_meeting=pdi_meeting)
     plans = []
@@ -243,7 +239,7 @@ def detail_pdi_meeting(request, id_meeting):
 
 def pdi_meeting_evaluate(request, follower_username):
     template = 'core/pdi_meeting_evaluate.html'
-    context = {}
+    context = get_next_events(user=request.user)
     follower = UserProfile.objects.get(user__username=follower_username)
     leader = UserProfile.objects.get(user=request.user)
 
@@ -302,7 +298,7 @@ def pdi_meeting_evaluate(request, follower_username):
 
 @login_required(login_url='/accounts/login/')
 def list_events(request):
-    context = {}
+    context = get_next_events(user=request.user)
     user    = UserProfile.objects.get(user=request.user)
 
     if user.profile == 1:
@@ -329,6 +325,12 @@ def list_events(request):
         profile = UserProfile.objects.get(id= meeting.follower_id)
         if profile not in followers:
             followers.append(profile)
+    
+    for meeting in pdi_meetings:
+        profile = UserProfile.objects.get(id= meeting.follower_id)
+        if profile not in followers:
+            followers.append(profile)
+
     context['one_on_ones'] = oneonone_meetings
     context['pdi_meetings'] = pdi_meetings
     context['followers'] = followers
@@ -340,9 +342,10 @@ def list_events(request):
 @login_required(login_url='/accounts/login/')
 def show_team(request):
     template = 'core/team.html'
-    context = {}
+    context = get_next_events(user=request.user)
     user = UserProfile.objects.get(user=request.user)
     all_pdi_meetings = PdiMeeting.objects.filter(leader=user).order_by('-date_time')
+    followers_created = UserProfile.objects.filter(creator=user).exclude(user=request.user)
     followers = []
     pdi_meetings = []
     for meeting in all_pdi_meetings:
@@ -355,8 +358,16 @@ def show_team(request):
                 plans.append({'plan':plan,'description':plan.description, 'plan_type':plan.plan_type})
             follower_pdi = {'follower':profile,'pdi_plans':plans}
             pdi_meetings.append(follower_pdi)
+    
+    new_followers = []
+    for follower in followers_created:
+        if follower not in followers:
+            followers.append(follower)
+            new_followers.append(follower)
+
     context['pdi_meetings'] = pdi_meetings
-    context['followers'] = followers
+    context['followers']    = followers
+    context['new_followers']= new_followers
     return render(request, template_name=template, context=context)
 
 
@@ -365,7 +376,7 @@ def meeting_evaluation(request, meeting_id, meeting_type):
     pdi_meeting = None
     one_on_one = None
     template = 'core/meeting_evaluation.html'
-    context = {}
+    context = get_next_events(user=request.user)
     profile = UserProfile.objects.get(user=request.user)
     if meeting_type == 'one_on_one':
         one_on_one = OneOnOneMeeting.objects.get(id=meeting_id)

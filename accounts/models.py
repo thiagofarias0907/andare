@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.db.models.deletion import SET_NULL
 from career.models import Occupation 
 
 # Create your models here.
@@ -14,6 +15,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     profile = models.SmallIntegerField(choices=PROFILE_CHOICES, default=1)
     occupation = models.ForeignKey(Occupation, on_delete=models.SET_NULL, null=True)
+    creator = models.ForeignKey('self',default=2, on_delete=models.SET_NULL, null=True)
     
     class Meta:
         verbose_name= 'Perfil do Usuário'

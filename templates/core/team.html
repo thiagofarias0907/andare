@@ -18,35 +18,39 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:career' %}">
+      <a class="nav-link" href="{% url 'career:list_career' %}">
         <span data-feather="file"></span>
         CARGOS E CARREIRAS
       </a>
     </li>
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
-      <a class="nav-link active" href="{% url 'core:team' %}">
-        <span data-feather="file"></span>
-        EQUIPE
-      </a>
+        <a class="nav-link active" href="{% url 'core:team' %}">
+          <span data-feather="file"></span>
+          EQUIPE
+        </a>
     </li>
+    {%endif%}
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'core:home' %}">
+      <a class="nav-link" href="{% url 'dashboard:dashboard' %}">
         <span data-feather="file"></span>
         RELATÓRIOS
       </a>
     </li>
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a class="nav-link" href="{% url 'core:home' %}">
         <span data-feather="file"></span>
         CONFIGURAÇÃO
       </a>
-    </li>
+    </li> {% endcomment %}
+    {% if user.user_profile.profile == 2 %}
     <li class="nav-item">
       <a class="nav-link" href="{% url 'accounts:add_user' %}">
         <span data-feather="file"></span>
         CONTROLE DE ACESSOS
       </a>
     </li>
+    {%endif%}
   </ul>
 </div>
 {%endblock navlink%}
@@ -59,7 +63,7 @@
       <div class="col-12 ">
         <div class="row row-flex justify-content-center align-items-stretch ">   
           {% for follower_profile in followers %}
-          <div class="col-3 g-2">
+          <div class="col-3 g-2 mb-4">
             <div class="card">
               {% comment %} <div class="card-header">
               </div> {% endcomment %}
@@ -94,38 +98,49 @@
                     </div>
                   </div>
                   <div class="col-12 row row-flex justify-content-start p-3 ">
-                    <div class="title secondary col-12 pl-0 pb-1">
-                      PDI
-                    </div>
-                    {% for meeting in pdi_meetings %}
-                      {%if meeting.follower == follower_profile%}
-                      <div class="row row-flex">
-                        {% for plan in meeting.pdi_plans %}
-                          <div class="col-3">
-                            <div class="rounded-square small row align-items-center justify-content-center">
-                              {{forloop.counter}}
-                            </div>
-                          </div>
-                          <div class="col-9  mb-3" >
-                            <div class="row row-flex justify-content-start">
-                              <div class="col-12 p-0  title secondary">
-                                {{plan.plan.get_plan_type_display}}
-                              </div>
-                              <div class="col-12 p-0 ">
-                                {{plan.description}}
-                              </div>
-                            </div>
-                          </div>
-                        {% endfor %}
+                    {% if follower_profile not in new_followers %}
+                      <div class="title secondary col-12 pl-0 pb-1">
+                        PDI
                       </div>
-                      {%endif%}
-                    {%endfor%}
+                      {% for meeting in pdi_meetings %}
+                        {%if meeting.follower == follower_profile%}
+                        <div class="row row-flex">
+                          {% for plan in meeting.pdi_plans %}
+                            <div class="col-3">
+                              <div class="rounded-square small row align-items-center justify-content-center">
+                                {{forloop.counter}}
+                              </div>
+                            </div>
+                            <div class="col-9  mb-3" >
+                              <div class="row row-flex justify-content-start">
+                                <div class="col-12 p-0  title secondary">
+                                  {{plan.plan.get_plan_type_display}}
+                                </div>
+                                <div class="col-12 p-0 ">
+                                  {{plan.description}}
+                                </div>
+                              </div>
+                            </div>
+                          {% endfor %}
+                        </div>
+                        {%endif%}
+                      {%endfor%}
+                    {%else%}
+
+                    {%endif%}
                   </div>
                 </div>
                 <div class="row justify-content-center mt-4 p-3 text-center"> 
-                  <div class="col-6 p-1">
-                      <button type="submit" class="btn btn-primary" onclick="location.href='/edit_pdi_meeting/{{follower_profile.user.username}}'">Acessar</button>
-                  </div>
+                
+                  {% if follower_profile not in new_followers %}  
+                    <div class="col-6 p-1">
+                        <button type="submit" class="btn btn-primary" onclick="location.href='/edit_pdi_meeting/{{follower_profile.user.username}}'">Acessar</button>
+                    </div>
+                  {%else%}
+                    <div class="col-6 p-1">
+                        <button type="submit" class="btn btn-primary" onclick="location.href='/pdi_meeting/{{follower_profile.user.username}}'">Criar Plano</button>
+                    </div>
+                  {%endif%}
                 </div>
               </div>
             </div>

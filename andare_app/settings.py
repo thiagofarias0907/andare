@@ -47,7 +47,8 @@ DJANGO_APPS = [
 PROJECT_APPS = [
     'core.apps.CoreConfig',
     'accounts.apps.AccountsConfig',
-    'career.apps.CareerConfig'
+    'career.apps.CareerConfig',
+    'dashboard.apps.DashboardConfig'
 ]
 
 THIRD_APPS = [
@@ -125,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 

@@ -5,7 +5,7 @@ class OneOnOneMeetingForm(forms.ModelForm):
     class Meta:
         model = OneOnOneMeeting
         verbose_name = 'Formulário reunião 1:1'
-        exclude = ['leader']
+        exclude = ['leader','follower']
 
 
 class PdiMeetingForm(forms.ModelForm):

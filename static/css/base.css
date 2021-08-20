@@ -250,3 +250,8 @@ input[type="radio"] {
     color: #8F85FF;
     background-color: #E9AFB2;
 } */
+
+
+.invisible{
+    display: none;
+}
