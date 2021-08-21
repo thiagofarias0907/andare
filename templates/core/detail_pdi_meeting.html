@@ -72,12 +72,14 @@
                     <p>{{ pdi_meeting.follower.user.first_name }} {{ pdi_meeting.follower.user.last_name }}</p>
                   </div>
                   <div class="col-2 align-center" >
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center" >
+                      <div class="profile-container-squared" >
                       {% if pdi_meeting.follower.picture %}
-                          <img src="{{  pdi_meeting.follower.picture.url }}" class="profile-container-squared" alt="profile_pic">
+                          <img src="{{  pdi_meeting.follower.picture.url }}" alt="profile_pic">
                       {% else %}
-                          <img src="{% static '/img/profile_default.png' %}" class="profile-container-squared" alt="profile_pic">
+                          <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                       {% endif %}
+                      </div>
                     </div>
                   </div>
                   <div class="occupation col-4 align-items-center">
@@ -150,7 +152,7 @@
                             {{ action_plan.description }}
                           </div>
                           <div class="col-2">
-                            {{ action_plan.due_date }}
+                            {{ action_plan.due_date | date:"d/m/y" }}
                           </div>
                           <div class="col-5 row ">
                               <div class='col'>

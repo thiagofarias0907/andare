@@ -59,103 +59,96 @@
     <div class="col-auto">
 
         <h1>Relatório</h1>
-        <div class="row  align-items-center ">
-          {% comment %} {% if selected_methodology == 0 %} {% endcomment %}
-            <div class="col-12 mt-2">
-                  <h4 class="card-title">Geral</h4>
-            </div>   
-            <div class="col-auto col-lg-5  m-2 p-2">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Distribuição de Cargos</h5>
-                  <canvas id="occupation_pie_chart"></canvas>
-                </div>
-              </div>
-            </div> 
-                    
-            <div class="col-auto col-lg-5 m-2 p-2">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Distribuição de status de planos de ação</h5>
-                  <canvas id="status_bar_chart" ></canvas>
-                </div>
+        <div class="row  align-items-center justify-content-center ">
+          <div class="col-12 mt-2">
+                <h4 class="card-title">Geral</h4>
+          </div>               
+          <div class="col-12">
+            <div class="row row-flex justify-content-center ">
+              <div class="col-auto   m-2 p-2">
+                <div class="card" >
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          Reuniões de PDI
+                      </h5>
+                      <p class="card-text">
+                        <h1><i class="fas fa-handshake"></i>  {{pdi_meetings_qty}} </h1>
+                      </p>
+                  </div>
+                </div>              
+              </div> 
+              <div class="col-auto   m-2 p-2">
+                <div class="card" >
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          Reuniões de 1:1
+                      </h5>
+                      <p class="card-text">
+                        <h1><i class="fas fa-comments"></i>  {{one_on_ones_qty}} </h1>
+                      </p>
+                  </div>
+                </div>              
+              </div> 
+              <div class="col-auto   m-2 p-2">
+                <div class="card" >
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          Colaboradores
+                      </h5>
+                      <p class="card-text">
+                        <h1><i class="fas fa-users"></i>  {{followers_qty}} </h1>
+                      </p>
+                  </div>
+                </div>              
+              </div> 
+              <div class="col-auto   m-2 p-2">
+                <div class="card" >
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          Planos
+                      </h5>
+                      <p class="card-text">
+                        <h1><i class="fas fa-route"></i>  {{plans_qty}} </h1>
+                      </p>
+                  </div>
+                </div>              
+              </div> 
+              <div class="col-auto   m-2 p-2">
+                <div class="card" >
+                  <div class="card-body">
+                      <h5 class="card-title">
+                          Ações Propostas 
+                      </h5>
+                      <p class="card-text">
+                        <h1><i class="fas fa-list-ol"></i>  {{actionplans_qty}} </h1>
+                      </p>
+                  </div>
+                </div>              
+              </div> 
+            </div>
+          </div> 
+          <div class="col-auto col-lg-5  m-2 p-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Distribuição de Cargos</h5>
+                <canvas id="occupation_pie_chart"></canvas>
               </div>
             </div>
-          {% comment %} {%endif%} {% endcomment %}
+          </div> 
+              
+          <div class="col-auto col-lg-5 m-2 p-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Distribuição de status de planos de ação</h5>
+                <canvas id="status_bar_chart" ></canvas>
+              </div>
+            </div>
+          </div>
           <div class="col-12 mt-4">
                 <h4 class="card-title">Detalhamento Por Colaborador</h4>
           </div>  
-          <div id="methodology-filter" class="col-12 ">
-            <div class="">
-              <div class="card-body">
-                {% comment %} <h5 class="card-title">Filtrar a metodologia</h5> {% endcomment %}
-                {% comment %} <form class="d-flex justify-content-left flex-wrap flex-md-nowrap align-items-center" >
-                  {% for methodology in methodologies %}
-                    <div class="form-check form-check-inline">
-                      {% if methodology.id == selected_methodology %}
-                        <input class="form-check-input dataset" type="radio" name="methodology" id="methodology-{{methodology.id}}" value="{{methodology.id}}" checked>
-                      {% else %}
-                        <input class="form-check-input dataset" type="radio" name="methodology" id="methodology-{{methodology.id}}" value="{{methodology.id}}" >
-                      {% endif %}                        
-                        <label class="form-check-label" for="methodology-{{methodology.id}}">
-                            {{ methodology.name }}
-                        </label>
-                    </div>
-                  {% endfor %}
-                  <div class="form-check form-check-inline">
-                    {% if selected_methodology == 0 %}
-                      <input class="form-check-input dataset" type="radio" name="methodology" id="all_methodologies" value="0" checked>
-                    {% else %}
-                      <input class="form-check-input dataset" type="radio" name="methodology" id="all_methodologies" value="0">
-                    {% endif %}                        
-                    <label class="form-check-label" for="all_methodologies">
-                        Todas
-                    </label>
-                  </div>
-                  <button class="btn btn-outline-success m-2" type="submit">Filtrar</button>
-                </form> {% endcomment %}
-              </div>
-            </div>
-          </div>
-          <div class="col-auto  m-2 p-2">
-            {% comment %} <div class="col-auto   m-2 p-2">
-              <div class="card" >
-                  <div class="card-body">
-                      <h5 class="card-title">
-                          Projetos
-                      </h5>
-                      <p class="card-text">
-                        <h1><i class="fas fa-project-diagram"></i>  {{projects_qty}} </h1>
-                      </p>
-                  </div>
-              </div>                        
-            </div>
-            <div class="col-auto   m-2 p-2">
-              <div class="card" >
-                  <div class="card-body">
-                      <h5 class="card-title">
-                          Projetos ativos
-                      </h5>
-                      <p class="card-text">
-                        <h1><i class="fas fa-play-circle"></i>  {{active_projects}} </h1>
-                      </p>
-                  </div>
-              </div>                        
-            </div>
-            <div class="col-auto   m-2 p-2">
-              <div class="card" >
-                <div class="card-body">
-                    <h5 class="card-title">
-                        Projetos Concluídos
-                    </h5>
-                    <p class="card-text">
-                      <h1><i class="fas fa-check-circle"></i>  {{done_projects}} </h1>
-                    </p>
-                </div>
-              </div>              
-            </div>  {% endcomment %}
-          </div>
-          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-6   m-2 p-2">
+         
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5   m-2 p-2">
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">Quantidade de Reuniões</h5>
@@ -164,37 +157,18 @@
             </div>
           </div>
 
-          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9 col-xl-9  m-2 p-2">
-            {% comment %} <div class="card">
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5   m-2 p-2">
+            <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Linha de tempo dos projetos</h5>
-                <canvas id="projecthistory-timeline-chart" ></canvas>
+                <h5 class="card-title">Percentual de conclusão dos Planos de Ação</h5>
+                <canvas id="pdi_completed_bar_chart" ></canvas>
               </div>
-            </div> {% endcomment %}
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-9 col-xl-9  m-2 p-2">
           </div>
           
-          {% comment %} {% if selected_methodology > 0 %} {% endcomment %}
-            {% comment %} <div class="col-12 mt-2">
-                  <h4 class="card-title">Geral</h4>
-            </div>   
-            <div class="col-auto col-lg-5  m-2 p-2">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Quantidade Geral de projetos por metodologia</h5>
-                  <canvas id="occupation_pie_chart"></canvas>
-                </div>
-              </div>
-            </div> 
-                    
-            <div class="col-auto col-lg-5 m-2 p-2">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Quantidade Geral de projetos por status</h5>
-                  <canvas id="status-bar-chart" ></canvas>
-                </div>
-              </div>
-            </div> {% endcomment %}
-          {% comment %} {%endif%} {% endcomment %}
         </div>
     </div>
 </div>
@@ -228,7 +202,7 @@
             datasets: [{
               data: {{ pdi_meetings_bar_chart_data.data|safe }},
               backgroundColor:  '#7EE8FA' ,
-              label: 'Qtd de Projetos'
+              label: 'Qtd de Reuniões'
             }],
             labels: {{ pdi_meetings_bar_chart_data.labels|safe }}
           },
@@ -244,6 +218,31 @@
             }
           }
         };
+        
+        var pdi_completed_config_bar = {
+          type: 'bar',
+          data: {
+            datasets: [{
+              data: {{ pdi_completed_bar_chart_data.data|safe }},
+              backgroundColor:  '#7EE8FA' ,
+              label: '% de ações completas'
+            }],
+            labels: {{ pdi_completed_bar_chart_data.labels|safe }}
+          },
+          options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: 100,
+                        stepSize: 1
+                    }
+                }]
+            }
+          }
+        };
+        
         var status_config_bar = {
           type: 'bar',
           data: {
@@ -267,42 +266,16 @@
           }
         };
 
-
-
-        var labels = [];
-        {% for d in projecthistory_timeline_chart_data.labels %}
-          labels.push(new Date("{{ d.isoformat }}").toLocaleDateString('pt-BR', {day:'numeric', month:'short', year:'numeric'}));
-        {% endfor %}
-        
-        var datasets = [];
-        {%for dataset in projecthistory_timeline_chart_data.data%}
-          datasets.push({      
-                  data: {{ dataset.data|safe }},
-                  borderColor: '{{ dataset.color|safe }}',
-                  backgroundColor: '{{ dataset.color|safe }}',
-                  fill: 'false',
-                  label: '{{ dataset.name|safe }}',
-                  lineTension: '0.1',
-          });
-                
-        {%endfor%}
-        var projecthistory_config_timeline = {
-          type: 'line',
-          data: {
-            datasets: datasets,
-            labels: labels
-          }
-        };
-
         window.onload = function() {
           var ctx = document.getElementById('occupation_pie_chart').getContext('2d');
           window.myPie = new Chart(ctx, occupation_config_pie);
           var ctx = document.getElementById('pdi_meetings_bar_chart').getContext('2d');
           window.myBar = new Chart(ctx, pdi_meetings_config_bar);
+          var ctx = document.getElementById('pdi_completed_bar_chart').getContext('2d');
+          window.myBar = new Chart(ctx, pdi_completed_config_bar);
           var ctx = document.getElementById('status_bar_chart').getContext('2d');
           window.myBar = new Chart(ctx, status_config_bar);
-          var ctx = document.getElementById('projecthistory-timeline-chart').getContext('2d');
-          window.myLine = new Chart(ctx, projecthistory_config_timeline);
+          
         };
     </script>
 {% endblock footer %}

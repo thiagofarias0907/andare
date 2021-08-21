@@ -61,9 +61,9 @@
       {% include 'partials/messages.html' %}
       </div>
       <div class="col-12 ">
-        <div class="row row-flex justify-content-center align-items-stretch ">   
-          {% for follower_profile in followers %}
-          <div class="col-3 g-2">
+        <div class="row row-flex justify-content-center ">   
+          {% for f in followers %}
+          <div class="col-3  g-2 mb-4 ">
             <div class="card">
               {% comment %} <div class="card-header">
               </div> {% endcomment %}
@@ -72,8 +72,8 @@
                   <div class="col-8 row row-flex justify-content-start">
                     <div class="col-4 p-1">
                       <div class="card-profile-container">
-                        {% if follower_profile.picture %}
-                          <img src="{{ follower_profile.picture.url }}" alt="profile_pic">
+                        {% if f.follower.picture %}
+                          <img src="{{ f.follower.picture.url }}" alt="profile_pic">
                         {% else %}
                           <img src="{% static '/img/profile_default.png' %}" alt="profile_pic">
                         {% endif %}
@@ -82,73 +82,120 @@
                     </div>
                     <div class="col-8  p-1">
                       <div class="col-12 p-0">
-                        <span style="font-size:1.2em">{{ follower_profile.user.first_name }} </span>
-                        <br><span style="font-size:0.8em">{{ follower_profile.user.last_name }} </span>
+                        <span style="font-size:1.2em">{{ f.follower.user.first_name }} </span>
+                        <br><span style="font-size:0.8em">{{ f.follower.user.last_name }} </span>
                       </div>
                     </div>
                   </div>
                   <div class="col-6 row row-flex align-items-center">
                     <div class="rounded-square highlight row align-items-center justify-content-center">
-                        {{ follower_profile.occupation.initials | truncatechars:6 | upper}}
+                        {{ f.follower.occupation.initials | truncatechars:6 | upper}}
                     </div>
                     <div class="col-9 row row-flex justify-content-start">
                       <div class="rounded-square row align-items-center justify-content-center">
-                          {{ follower_profile.occupation.tier}}
+                          {{ f.follower.occupation.tier}}
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 row row-flex justify-content-center p-3">
-                    <div class="title col-12 p-1">
-                      próximos eventos
-                    </div>
-                    {% for meeting in one_on_ones %}
-                      {%if meeting.follower == follower_profile%}
-                      <div class="col-6">
-                        <div class="row row-flex">
-                          <div class="col-6">
-                            <div class="rounded-square dark row align-items-center justify-content-center">
-                                {{meeting.next_meeting_date  | date:"d M."}}
+                  {%if f.one_on_ones != None %}
+                    <div class="col-12 row row-flex justify-content-start p-3">
+                      <div class="title col-12 p-1">
+                        Eventos recentes
+                      </div>
+                      {% for meeting in f.one_on_ones %}
+                        {%if meeting.follower == f.follower%}
+                        <div class="col-6">
+                          <div class="row row-flex">
+                            <div class="col-6">
+                              <div class="rounded-square row align-items-center justify-content-center">
+                                  {{meeting.date_time  | date:"d M."}}
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-6 row align-items-center justify-content-center ">
-                            <div class="col">
-                              <div class="col-12 mt-1 ml-1 p-0">
-                                <a href="{% url 'core:detail_one_on_one' meeting.id %}"><label class="title" style="cursor:pointer">1:1</label></a>
+                            <div class="col-6 row align-items-center justify-content-center ">
+                              <div class="col">
+                                <div class="col-12 mt-1 ml-1 p-0">
+                                  <a href="{% url 'core:detail_one_on_one' meeting.id %}"><label class="title" style="cursor:pointer">1:1</label></a>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      {%endif%}
-                    {%endfor%}
-                    {% for meeting in pdi_meetings %}
-                      {%if meeting.follower == follower_profile%}
-                      <div class="col-6">
-                        <div class="row row-flex">
-                          <div class="col-6">
-                            <div class="rounded-square dark row align-items-center justify-content-center">
-                                {{meeting.date_time  | date:"d M."}}
+                        {%endif%}
+                      {%endfor%}
+                      {% for meeting in f.pdi_meetings %}
+                        {%if meeting.follower == f.follower%}
+                        <div class="col-6">
+                          <div class="row row-flex">
+                            <div class="col-6">
+                              <div class="rounded-square row align-items-center justify-content-center">
+                                  {{meeting.date_time  | date:"d M."}}
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-6 row row-flex justify-content-start">
-                            <div class="col">
-                              <div class="col-12 mt-1 ml-1 p-0">
-                                <a href="{% url 'core:detail_pdi_meeting' meeting.id %}"><label class="title secondary" style="cursor:pointer">pdi</label></a>
+                            <div class="col-6 row row-flex  align-items-center justify-content-start ">
+                              <div class="col">
+                                <div class="col-12 mt-1 ml-1 p-0">
+                                  <a href="{% url 'core:detail_pdi_meeting' meeting.id %}"><label class="title secondary" style="cursor:pointer">pdi</label></a>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
+                        {%endif%}
+                      {%endfor%}
+                    </div>
+                    <div class="col-12 row row-flex justify-content-start p-3">
+                      <div class="title col-12 p-1">
+                        próximos eventos
                       </div>
-                      {%endif%}
-                    {%endfor%}
-                  </div>
+                      {% for meeting in next_oneonone_meetings %}
+                        {%if meeting.follower == f.follower%}
+                        <div class="col-6">
+                          <div class="row row-flex">
+                            <div class="col-6">
+                              <div class="rounded-square dark row align-items-center justify-content-center">
+                                  {{meeting.next_meeting_date  | date:"d M."}}
+                              </div>
+                            </div>
+                            <div class="col-6 row align-items-center justify-content-center ">
+                              <div class="col">
+                                <div class="col-12 mt-1 ml-1 p-0">
+                                  <a href="{% url 'core:detail_one_on_one' meeting.id %}"><label class="title" style="cursor:pointer">1:1</label></a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {%endif%}
+                      {%endfor%}
+                      {% for meeting in next_pdi_meetings %}
+                        {%if meeting.follower == f.follower%}
+                        <div class="col-6">
+                          <div class="row row-flex">
+                            <div class="col-6">
+                              <div class="rounded-square dark row align-items-center justify-content-center">
+                                  {{meeting.next_meeting  | date:"d M."}}
+                              </div>
+                            </div>
+                            <div class="col-6 row row-flex  align-items-center justify-content-start ">
+                              <div class="col">
+                                <div class="col-12 mt-1 ml-1 p-0">
+                                  <a href="{% url 'core:detail_pdi_meeting' meeting.id %}"><label class="title secondary" style="cursor:pointer">pdi</label></a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {%endif%}
+                      {%endfor%}
+                    </div>
+                  {%endif%}
                 </div>
                 <div class="row justify-content-center mt-4 p-3 text-center"> 
                   <div class="col-6 p-1">
-                      <button type="submit" class="btn btn-secondary" onclick="location.href='/pdi_meeting/{{follower_profile.user.username}}'">Registrar PDI</button>
+                      <button type="submit" class="btn btn-secondary" onclick="location.href='/pdi_meeting/{{f.follower.user.username}}'">Registrar PDI</button>
                   </div>
                   <div class="col-6 p-1">
-                      <button type="submit" class="btn btn-primary" onclick="location.href='/one_on_one/{{follower_profile.user.username}}'">Registrar 1:1</button>
+                      <button type="submit" class="btn btn-primary" onclick="location.href='/one_on_one/{{f.follower.user.username}}'">Registrar 1:1</button>
                   </div>
                 </div>
               </div>

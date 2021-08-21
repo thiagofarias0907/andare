@@ -66,7 +66,7 @@
       <div class="col-9">
         <div class="card">
           <div class="card-body">
-            <form method="POST" action="{{follower.user.username}}"  id="formset">
+            <form method="POST" action="{{follower.user.username}}"  id="formset" data-skills-url="{% url 'core:ajax_load_skills' %}">
                 {% csrf_token %}
                 <div class="row row-flex justify-content-center">     
                   <div class ="col-12" >
@@ -75,11 +75,13 @@
                   </div>
                   <div class="col-2 align-center" >
                     <div class="row justify-content-center">
+                      <div  class="profile-container-squared" >
                       {% if follower.picture %}
-                          <img src="{{  follower.picture.url }}" class="profile-container-squared" alt="profile_pic">
+                          <img src="{{  follower.picture.url }}"alt="profile_pic">
                       {% else %}
                           <img src="{% static '/img/profile_default.png' %}" class="profile-container-squared" alt="profile_pic">
                       {% endif %}
+                      </div>
                     </div>
                   </div>
                   <div class="occupation col-4 align-items-center">
@@ -117,19 +119,21 @@
                   </div>
                   {% if form.career_goal != None %}
                   <label for="{{ leader.username.id_for_label }}" class="form-section-title">Habilidades do Cargo</label>
-                  <div class="row justify-content-center align-items-center m-1">
+                  <div class="row justify-content-start align-items-center m-1">
                     <div class="col-1">
                         <div class="icon">
                             <i class="fas fa-route"></i>
                         </div>
                     </div>
-                    {% for skill in skills %}
+                    {% comment %} {% for skill in skills %}
                     <div class="col row justify-content-center">
                       <div class="col skill" >
                         {{skill}}
                       </div>
                     </div>
-                    {%endfor%}
+                    {%endfor%} {% endcomment %}
+                    <div class='col-11 row row-flex' id="skills" >
+                    </div>
                   </div>
                   {% endif %}
                   <label for="{{ leader.username.id_for_label }}" class="form-section-title">Interesses</label>
@@ -228,7 +232,7 @@
                                   {% comment %} <input name="actionplan-planformset-{{ forloop.counter0 }}-description" id="id_actionformset-{{ forloop.counter0 }}-description" placeholder="" class="form-control" > {% endcomment %}
                                     {{ action_form.description | add_class:"form-control"  }}
                                 </div>                                                               
-                                <div class="col-2"> 
+                                <div class="col-2 prl-0 pr-0"> 
                                   <div class="date" >
                                     {% comment %} <input name="action_formset-{{ forloop.counter0 }}-due_date" id="id_action_formset-{{ forloop.counter0 }}-due_date" placeholder="" class="form-control" >                                                                       {% endcomment %}
                                       {{ action_form.due_date | add_class:"form-control"  }}
@@ -296,6 +300,22 @@
            // deleteContainerClass: 'remove-action-class',      // Container CSS class for the delete link
         });*/
     });
+    $("#id_career_goal").change(function () {
+        const url = $("#formset").attr("data-skills-url");  
+        const id = $(this).val();  
+
+        $.ajax({                      
+            url: url,                   
+            data: {
+                'id_occupation': id       
+            },
+            success: function (data) {  
+                $("#skills").html(data); 
+            }
+        });
+
+    });
+
     function checkNested(){
       setTimeout( checkIt, 200);
     };

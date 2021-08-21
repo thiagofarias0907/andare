@@ -78,6 +78,7 @@ def user_change_password(request):
 def change_user_profile(request):
     template = 'accounts/change_user_profile.html'
     context = get_next_events(user=request.user)
+    profile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -89,6 +90,7 @@ def change_user_profile(request):
             messages.error(request, 'Não foi possível alterar o perfil')
     form = UserProfileForm()
     context['form'] = form
+    context['profile'] = profile
     return render(request,template,context)
 
 @login_required(login_url='/accounts/login/')
@@ -106,24 +108,30 @@ def update_user_profile_picture(request, username):
     form = UserProfilePictureForm(instance=profile)
     context['form'] = form
     context['username'] = username
+    context['profile'] = profile
     return render(request,template,context)
 
 @login_required(login_url='/accounts/login/')
 def profile(request, username):
     template = 'accounts/profile.html'
     context = get_next_events(user=request.user)
-    profile = UserProfile.objects.get(user__username=username)
+    profile_update = UserProfile.objects.get(user__username = username)
+    profile = UserProfile.objects.get(user=request.user)
+
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        form = UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
             form_save = form.save(commit=False)
-            form_save.user = request.user
+            form_save.id = profile_update.id
+            form_save.user = profile_update.user
+            form_save.picture = profile_update.picture
             form_save.save()
             messages.success(request, "Perfil alterado com Sucesso")
         else:
             messages.error(request, 'Não foi possível alterar o perfil')
-    form = UserProfileForm(instance=profile)
+    form = UserProfileForm(instance=profile_update)
     context['form'] = form
     context['username'] = username
+    context['profile_update'] = profile_update
     context['profile_type'] = profile.profile
     return render(request,template,context)

@@ -15,13 +15,16 @@ class Occupation(models.Model):
         verbose_name_plural = "Cargos"
 
     def __str__(self):
-        return self.name
+        return self.name + ' ' +  str(self.level)
 
     def initials(self):
         initials = self.name[0:2]
         words = self.name.split() 
         if len(words) > 1:
-            initials = words[0][0].upper()+ words[1][0].upper()
+            if (words[1].lower() == 'de' and len(words) >=3):
+                initials = words[0][0].upper()+ words[2][0].upper()
+            else:
+                initials = words[0][0].upper()+ words[1][0].upper()
         return initials
 
 class Skill(models.Model):

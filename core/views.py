@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from django.contrib.messages.api import error
 from accounts import models
 from django.forms.models import inlineformset_factory
 from career.models import Occupation, Skill
@@ -6,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
 from django.db.models import Q
+from django.contrib import messages
 
 from .models import OneOnOneMeeting, PdiPlan, PdiMeeting, ActionPlan, UserProfile, MeetingEvaluation
 from .forms import ActionPlanStatusForm, MeetingEvaluationForm, OneOnOneMeetingForm, PdiMeetingForm, PdiPlanForm, ActionPlanForm, PdiPlanFormset, ActionPlanFormset, ActionPlanStatusFormset
@@ -27,6 +30,8 @@ def home(request):
 
     return render(request, template_name=template, context=context)
 
+
+@login_required(login_url='/accounts/login/')
 def one_on_one(request):
     template = 'core/one_on_one.html'
     context = get_next_events(user=request.user)
@@ -44,6 +49,8 @@ def one_on_one(request):
     context['form'] = form
     return render(request, template_name=template, context=context)
 
+
+@login_required(login_url='/accounts/login/')
 def one_on_one_follower(request, follower):
     template = 'core/one_on_one.html'
     context = get_next_events(user=request.user)
@@ -63,6 +70,8 @@ def one_on_one_follower(request, follower):
     context['form'] = form
     return render(request, template_name=template, context=context)
 
+
+@login_required(login_url='/accounts/login/')
 def update_one_on_one(request, leader_username, follower_username):
     template = 'core/one_on_one.html'
     context = get_next_events(user=request.user)
@@ -81,6 +90,8 @@ def update_one_on_one(request, leader_username, follower_username):
     context['form'] = form
     return render(request, template_name=template, context=context)
 
+
+@login_required(login_url='/accounts/login/')
 def detail_one_on_one(request, id_meeting):
     template = 'core/detail_one_on_one.html'
     context = get_next_events(user=request.user)
@@ -89,61 +100,13 @@ def detail_one_on_one(request, id_meeting):
     return render(request, template_name=template, context=context)
 
 
-# def pdi_meeting(request, follower_username):
-#     template = 'core/pdi_meeting.html'
-#     context = get_next_events(user=request.user)
-#     follower = UserProfile.objects.get(user__username=follower_username)
-#     leader = UserProfile.objects.get(user=request.user)
-#     oneonone_meetings = OneOnOneMeeting.objects.filter(leader=leader)
-#     pdi_meetings = PdiMeeting.objects.filter(leader=leader)
-#     context['one_on_ones'] = oneonone_meetings
-#     context['pdi_meetings'] = pdi_meetings
-#     pdi_plan_formset = inlineformset_factory(PdiMeeting, PdiPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
-#     pdi_action_formset = inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=False, extra=0, min_num=1, max_num=5)
-#     if (request.method == 'POST'):     
-#         pdi_form  = PdiMeetingForm(request.POST)
-#         plan_formset = pdi_plan_formset(request.POST, request.FILES, prefix='planformset')
-#         action_formset = pdi_action_formset(request.POST, request.FILES, prefix='actionformset')
-#         if plan_formset.is_valid() and action_formset.is_valid() and pdi_form.is_valid():
-#             saved_pdi_meeting = pdi_form.save(commit=False)
-#             saved_pdi_meeting.follower = follower
-#             saved_pdi_meeting.leader = follower
-#             saved_pdi_meeting.save()
-
-#             plan_formset_to_commit = plan_formset.save(commit=False)
-#             counter = 0
-#             for form in plan_formset_to_commit:
-#                 form.pdi_meeting = PdiMeeting.objects.get(id=saved_pdi_meeting.id)
-#                 form.save()
-#                 action_formset_to_commit = action_formset.save(commit=False)
-#                 for action_form in action_formset_to_commit:
-#                     action_form.pdi_plan = PdiPlan.objects.get(id=form.id)
-#                     action_form.save()
-                
-#             return redirect('/')
-#     occupations = Occupation.objects.all()      
-#     skills      = Skill.objects.all()
-#     form = PdiMeetingForm(instance=follower)
-#     context['form'] = form
-#     context['plan_formset'] = pdi_plan_formset(prefix='planformset')
-#     context['action_formset'] = pdi_action_formset(prefix='actionformset')
-#     context['occupations'] = occupations
-#     context['skills'] = skills
-#     context['follower'] = follower
-#     return render(request, template_name=template, context=context)
-
-
-
+@login_required(login_url='/accounts/login/')
 def pdi_meeting(request, follower_username):
     template = 'core/pdi_meeting.html'
     context = get_next_events(user=request.user)
     follower = UserProfile.objects.get(user__username=follower_username)
     leader = UserProfile.objects.get(user=request.user)
-    
-    # pdi_meeting = PdiMeeting.objects.get_object_or_404(id= pdi_meeting_id)
-    # pdi_plan_formset = PdiPlanFormset(instance=pdi_meeting)
-    # pdi_plan_formset = PdiPlanFormset()
-    # pdi_action_formset = ActionPlanFormset
+
     if (request.method == 'POST'):     
         pdi_form  = PdiMeetingForm(request.POST)
         plan_formset = PdiPlanFormset(request.POST, request.FILES, prefix='planformset')
@@ -165,24 +128,21 @@ def pdi_meeting(request, follower_username):
                     nested.save(commit=False)
                     nested.pdi_plan = saved_plan
                     nested.save()
-
-                # action_plan_formset = ActionPlanFormset(saved_plan.actionplan_set)
-                # saved_actions = action_plan_formset.save(commit=False)
-                # for action in saved_actions:
-                #     saved_action = action.save(commit=False)
-                #     saved_action.pdi_plan = saved_plan
-                #     saved_action.save()
             return redirect('/events')
+        else:
+            messages.error(request, 'Falha ao salvar os dados')
     occupations = Occupation.objects.all()      
-    skills      = Skill.objects.all()
+    # skills      = Skill.objects.all()
     form = PdiMeetingForm(instance=follower)
     context['form'] = form
     context['plan_formset'] = PdiPlanFormset(prefix='planformset')
     context['occupations'] = occupations
-    context['skills'] = skills
+    context['skills'] = []
     context['follower'] = follower
     return render(request, template_name=template, context=context)
 
+
+@login_required(login_url='/accounts/login/')
 def edit_pdi_meeting(request, follower_username):
     template = 'core/pdi_meeting_update.html'
     context = get_next_events(user=request.user)
@@ -223,6 +183,8 @@ def edit_pdi_meeting(request, follower_username):
     return render(request, template_name=template, context=context)
 
 
+
+@login_required(login_url='/accounts/login/')
 def detail_pdi_meeting(request, id_meeting):
     template = 'core/detail_pdi_meeting.html'
     context = get_next_events(user=request.user)
@@ -237,6 +199,8 @@ def detail_pdi_meeting(request, id_meeting):
     return render(request, template_name=template, context=context)
 
 
+
+@login_required(login_url='/accounts/login/')
 def pdi_meeting_evaluate(request, follower_username):
     template = 'core/pdi_meeting_evaluate.html'
     context = get_next_events(user=request.user)
@@ -264,35 +228,13 @@ def pdi_meeting_evaluate(request, follower_username):
     context['pdi_plans']    = pdi_plans
     context['actions_and_plans'] = actions_and_plans
     if (request.method == 'POST'):     
-        # action_plan_formset = ActionPlanFormset(request.POST, request.FILES, prefix='actionplanformset35')
         for plan in pdi_plans:
-            # action_plan_formset = ActionPlanStatusFormset(prefix='actionplanformset'+str(plan.id), instance=plan)
             action_plan_form = ActionPlanStatusForm(request.POST, request.FILES)
             if action_plan_form.is_valid():
                 saved_form = action_plan_form.save(commit=False)
                 saved_form.pdi_plan_id = plan.id
                 saved_form.save()
-            # for form in action_plan_formset:
-                # if form.is_valid():
-                #     form.save()
         return redirect('core:team')
-        # pdi_form  = PdiMeetingForm(request.POST)
-        # plan_formset = PdiPlanFormset(request.POST, request.FILES, prefix='planformset')
-        # if plan_formset.is_valid() and pdi_form.is_valid():
-        #     saved_pdi_meeting = pdi_form.save(commit=False)
-        #     saved_pdi_meeting.follower = follower
-        #     saved_pdi_meeting.leader = leader
-        #     saved_pdi_meeting.save()
-        #     saved_plans = plan_formset.save(commit=False)
-        #     for saved_plan in saved_plans:
-        #         saved_plan.pdi_meeting = saved_pdi_meeting
-        #         saved_plan.save()
-        #         for plan in plan_formset:
-        #             for nested in plan.nested:
-        #                 nested.save(commit=False)
-        #                 nested.pdi_plan = saved_plan
-        #                 nested.save()
-        #     return redirect('/team')
     return render(request, template_name=template, context=context)
 
 
@@ -318,9 +260,10 @@ def list_events(request):
         return render(request, template_name=template, context=context)
 
     template = 'core/events.html'
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user)
-    pdi_meetings = PdiMeeting.objects.filter(leader=user)
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user).order_by('-date_time')
+    pdi_meetings = PdiMeeting.objects.filter(leader=user).order_by('-date_time')
     followers = []
+    followers_objects = []
     for meeting in oneonone_meetings:
         profile = UserProfile.objects.get(id= meeting.follower_id)
         if profile not in followers:
@@ -330,10 +273,20 @@ def list_events(request):
         profile = UserProfile.objects.get(id= meeting.follower_id)
         if profile not in followers:
             followers.append(profile)
+    
+    for follower in followers:
+        pdis = PdiMeeting.objects.filter(leader=user).filter(follower=follower).order_by('-date_time')[:2]
+        ones = OneOnOneMeeting.objects.filter(leader=user).filter(follower=follower).order_by('-date_time')[:2]
+        followers_objects.append({'follower':follower, 'pdi_meetings':pdis, 'one_on_ones':ones})
+
+    all_followers = UserProfile.objects.filter(creator=user)
+    for follower in all_followers:
+        if follower not in followers:
+            followers_objects.append({'follower':follower, 'pdi_meetings':None, 'one_on_ones':None})
 
     context['one_on_ones'] = oneonone_meetings
     context['pdi_meetings'] = pdi_meetings
-    context['followers'] = followers
+    context['followers'] = followers_objects
     return render(request, template_name=template, context=context)
 
 
@@ -372,6 +325,8 @@ def show_team(request):
 
 
 
+
+@login_required(login_url='/accounts/login/')
 def meeting_evaluation(request, meeting_id, meeting_type):
     pdi_meeting = None
     one_on_one = None
@@ -401,3 +356,15 @@ def meeting_evaluation(request, meeting_id, meeting_type):
     context['one_on_one']   = one_on_one
     context['score_loop']   = range(1,11)
     return render(request, template_name=template, context=context)
+
+
+@login_required(login_url='/accounts/login/')
+def load_skills(request):
+    template = 'core/skills_dropdown_list_options.html'
+    context = {}    
+    id_occupation = request.GET.get('id_occupation')
+    skills = []
+    if (id_occupation is not None) and (id_occupation != ''):
+        skills = Skill.objects.filter(occupation_id=id_occupation).order_by('id')
+    context['skills'] = skills
+    return render(request, template_name=template,context=context)

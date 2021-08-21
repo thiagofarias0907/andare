@@ -69,7 +69,7 @@
               </div> {% endcomment %}
               <div class="card-body">  
                 <div class="row row-flex align-items-center justify-content-center ">
-                  <div class="col-12 row row-flex justify-content-center p-3">
+                  <div class="col-12 row row-flex justify-content-center p-3 edit-profile" onclick="location.href='{% url 'accounts:profile' follower_profile.user.username %}'">
                     <div class="col-3">
                       <div class="card-profile-container">
                         {% if follower_profile.picture %}
@@ -89,7 +89,7 @@
                   </div>
                   <div class="row row-flex align-items-center justify-content-between">
                     <div class="rounded-square highlight row align-items-center justify-content-center">
-                        {{ follower_profile.occupation | truncatechars:3 | upper}}
+                        {{ follower_profile.occupation.initials | upper}}
                     </div>
                     <div class="col-9 row row-flex justify-content-start">
                       <div class="rounded-square row align-items-center justify-content-center">

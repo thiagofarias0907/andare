@@ -11,6 +11,7 @@ urlpatterns = [
     path('one_on_one/detail/<id_meeting>', views.detail_one_on_one, name='detail_one_on_one'),
     path('one_on_one/<leader_username>/<follower_username>', views.update_one_on_one, name='update_one_on_one'),
     path('pdi_meeting/<follower_username>', views.pdi_meeting, name='pdi_meeting'),
+    path('ajax/load-skills/', views.load_skills, name='ajax_load_skills'),
     path('edit_pdi_meeting/<follower_username>', views.edit_pdi_meeting, name='edit_pdi_meeting'),
     path('pdi_meeting/detail/<id_meeting>', views.detail_pdi_meeting, name='detail_pdi_meeting'),
     path('evaluate/<meeting_type>/<int:meeting_id>', views.meeting_evaluation, name='meeting_evaluation'),

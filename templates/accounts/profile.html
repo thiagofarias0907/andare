@@ -64,22 +64,24 @@
             {% if user.is_authenticated %}
             <div class="card" style="width: 18rem;">
                 <a href="{% url 'accounts:change_profile' %} ">
-                    {% if user.user_profile.picture %}
-                        <img src="{{ user.user_profile.picture.url }}" class="card-img-top" alt="profile_pic">
+                    {% if profile_update.picture %}
+                        <img src="{{ profile_update.picture.url }}" class="card-img-top" alt="profile_pic">
                     {% else %}
                         <img src="{% static '/img/profile_default.png' %}" class="card-img-top" alt="profile_pic">
                     {% endif %}
                 </a>
                 <div class="card-body">
                     <h5 class="card-title">
-                        {{ user.get_full_name | default:user.username }}
+                        {{ profile_update.user.get_full_name | default:profile_update.user.username }}
                     </h5>
                     <p class="card-text">
-                        <i>@{{ user.username | default:user.username }}</i>
+                        <i>@{{ profile_update.user.username | default:profile_update.user.username }}</i>
                     </p>
-                    <a href="{% url 'accounts:change_password' %}" type="button" class="btn btn-primary"  style="margin:3px">Alterar Senha</a>
-                    {% if user.user_profile %}
-                        <a href="{% url 'accounts:update_profile' user.username  %}" type="button" class="btn btn-secondary" style="margin:3px">Alterar Imagem</a>
+                    {% if profile_update.user == user%}
+                      <a href="{% url 'accounts:change_password' %}" type="button" class="btn btn-primary"  style="margin:3px">Alterar Senha</a>
+                    {%endif%}
+                    {% if profile_update.user.user_profile %}
+                        <a href="{% url 'accounts:update_profile' profile_update.user.username  %}" type="button" class="btn btn-secondary" style="margin:3px">Alterar Imagem</a>
                     {% else %}
                         <a href="{% url 'accounts:change_profile' %}" type="button" class="btn btn-secondary" style="margin:3px">Incluir Imagem</a>
                     {% endif %}
@@ -87,7 +89,7 @@
             </div>
             {% if profile_type == 2 %}
               <div class="col-auto">
-                  <form method="POST" action="{{user.username}}">
+                  <form method="POST" action="{{profile_update.user.username}}">
                       {% csrf_token %}
                       <div class="form-group">
                       <label for="{{ form.profile.id_for_label }}" class="form-label">Tipo de Perfil:</label>

@@ -255,3 +255,9 @@ input[type="radio"] {
 .invisible{
     display: none;
 }
+
+.edit-profile:hover {
+    cursor: pointer;
+    color: #E9AFB2;
+    font-weight: 700;
+}

@@ -75,11 +75,13 @@
                   </div>
                   <div class="col-2 align-center" >
                     <div class="row justify-content-center">
+                      <div class="profile-container-squared" >
                       {% if follower.picture %}
                           <img src="{{  follower.picture.url }}" class="profile-container-squared" alt="profile_pic">
                       {% else %}
                           <img src="{% static '/img/profile_default.png' %}" class="profile-container-squared" alt="profile_pic">
                       {% endif %}
+                      </div>
                     </div>
                   </div>
                   <div class="occupation col-4 align-items-center">
@@ -166,7 +168,7 @@
                             {{ action_plan.description | attr:'type:hidden' }}
                           </div>
                           <div class="col-2">
-                            {{ action_plan.due_date.value }}
+                            {{ action_plan.due_date.value  | date:"d/m/y"  }}
                             {{ action_plan.due_date | attr:'type:hidden' }}
                           </div>
                           {% comment %} <div class="col-6">

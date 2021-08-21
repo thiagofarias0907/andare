@@ -58,9 +58,11 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="col-md-10 ms-sm-auto col-lg-12 col-xl-12 ">
             <h1>Plano de Cargos e Carreira</h1>
+            {%if user.user_profile.profile == 2 %}
             <div class="pt-3 pb-2 mb-3">
                 <a type="button" class="btn btn-primary" href="{% url 'career:add_occupation' %}">Adicionar Cargo</a>
             </div>
+            {%endif%}
            
             <div class="col">
                 {% comment %} <div class="row justify-content-evenly align-items-start ">
@@ -95,8 +97,10 @@
                       <th scope="col">Cargo</th>
                       <th scope="col">Subnível</th>
                       <th scope="col">Descrição</th>
-                      <th scope="col">Habilidades</th>
+                      <th scope="col">Habilidades</th>                      
+                      {%if user.user_profile.profile == 2 %}
                       <th scope="col">Editar</th>
+                      {%endif%}
                     </tr>
                   </thead>
                   <tbody> 
@@ -110,7 +114,8 @@
                       {%for skill in data.skills %}
                         <li class="list-group-item">{{skill.name}} - {{ skill.description }}</li>
                       {% endfor %}
-                      </td>
+                      </td>                 
+                      {%if user.user_profile.profile == 2 %}
                       <td>
                         <div class="row justify-content-center" style="text-align:center">
                             <div class="col p-1" >
@@ -121,6 +126,7 @@
                             </div>
                         </div>
                       </td>
+                      {% endif %}
                     </tr>
                   {% endfor %}
                   </tbody>

@@ -157,18 +157,18 @@
                     </div>
                 </div>
               <div class="row justify-content-between">
-                <div class="col-4 row">
-                    <div for="{{ form.date.id_for_label }}" class="date col-6" >
+                <div class="col-6 row">
+                    <div for="{{ form.date.id_for_label }}" class="date col" >
                     <label class="form-label">Próxima Data</label>
                         {{ form.next_meeting_date | add_class:"form-control"  }}
                     </div>
                     
-                    <div for="{{ form.frequency.id_for_label }}"class="date col-6">
+                    <div for="{{ form.frequency.id_for_label }}"class="date col">
                     <label class="form-label">Período</label>
                         {{ form.meetings_frequency | add_class:"form-control" }}
                     </div>
                 </div>               
-                <div class="row col-8 justify-content-end align-items-end mr-1">
+                <div class="row col justify-content-end align-items-end mr-1">
                   <div class="">
                       <button type="submit" class="btn btn-primary">Salvar</button>
                   </div>

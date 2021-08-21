@@ -9,24 +9,24 @@ from django.db.models import Q
 from core.views import get_next_events
 
 
-@login_required(login_url='/accounts/login/')
-def pie_chart(request):
-    labels = []
-    data = []
-    occupations = Occupation.objects.all()
-    users = UserProfile.objects.all()
-    for occupation in occupations:
-        count = 0
-        for user in users:
-            if user.occupation == occupation:
-                count = count + 1    
-        labels.append(occupation.name)
-        data.append(count)
+# @login_required(login_url='/accounts/login/')
+# def pie_chart(request):
+#     labels = []
+#     data = []
+#     occupations = Occupation.objects.all()
+#     users = UserProfile.objects.all()
+#     for occupation in occupations:
+#         count = 0
+#         for user in users:
+#             if user.occupation == occupation:
+#                 count = count + 1    
+#         labels.append(occupation.name)
+#         data.append(count)
 
-    return render(request, 'dashboard/chart.html', {
-        'labels': labels,
-        'data': data,
-    })
+#     return render(request, 'dashboard/chart.html', {
+#         'labels': labels,
+#         'data': data,
+#     })
 
 @login_required(login_url='/accounts/login/')
 def dashboard(request):
@@ -39,14 +39,18 @@ def dashboard(request):
         'data': [],
         'labels': [],
     }
+    pdi_completed_bar_chart_data = {
+        'data': [],
+        'labels': [],
+    }
     status_bar_chart_data = {
         'data': [],
         'labels': [],
     }
-    projecthistory_timeline_chart_data = {
-        'data': [],
-        'labels': []
-    }
+    # projecthistory_timeline_chart_data = {
+    #     'data': [],
+    #     'labels': []
+    # }
 
     selected_occupation = 0 
     if request.GET.get('occupation') != '' and request.GET.get('occupation') is not None:
@@ -61,21 +65,55 @@ def dashboard(request):
                 continue 
             if user.occupation.id == occupation.id:
                 count = count + 1    
-        occupation_pie_chart_data.get('labels').append(occupation.name)
+        occupation_pie_chart_data.get('labels').append(occupation.name+' ' + str(occupation.level))
         occupation_pie_chart_data.get('data').append(count)
 
-    users = UserProfile.objects.all()
     pdi_meetings = PdiMeeting.objects.all()
     for user in users:
         count = 0
         name = user.user.first_name
         for pdi_meeting in pdi_meetings:
-            # if pdi_meeting.occupation_id != selected_occupation  and selected_occupation > 0:
-            #     continue
             if user.id == pdi_meeting.follower.id:
                 count = count + 1
         pdi_meetings_bar_chart_data.get('data').append(count)
         pdi_meetings_bar_chart_data.get('labels').append(name)
+
+    
+    for user in users:
+        count = 0
+        completed = 0
+        total_actions = 0
+        name = user.user.first_name
+        pdi_meetings = PdiMeeting.objects.filter(follower=user)
+        for pdi_meeting in pdi_meetings:
+            if user.id == pdi_meeting.follower.id:
+                count = count + 1
+            plans = PdiPlan.objects.filter(pdi_meeting=pdi_meeting)
+            for plan in plans:
+                action_plans = ActionPlan.objects.filter(pdi_plan=plan)
+                for action in action_plans:
+                    total_actions = total_actions + 1
+                    if action.status == 4:
+                        completed = completed + 1
+        if (total_actions>0):
+            pdi_completed_bar_chart_data.get('data').append(round(100*completed/total_actions,2))
+        else:
+            pdi_completed_bar_chart_data.get('data').append(0)
+        pdi_completed_bar_chart_data.get('labels').append(name)
+
+    # for user in users:
+    #     count = 0
+    #     name = user.user.first_name
+    #     action_plans = ActionPlan.objects.filter(user=user)
+    #     for action in action_plans:
+    #         if action.status == 4:
+    #             count = count + 1
+    #     if (len(action_plans)>0):
+    #         pdi_completed_bar_chart_data.get('data').append(count/len(action_plans))
+    #     else:
+    #         pdi_completed_bar_chart_data.get('data').append(0)
+    #     pdi_completed_bar_chart_data.get('labels').append(name)
+
 
     
     status_choices = ActionPlan.STATUS_CHOICES
@@ -164,16 +202,19 @@ def dashboard(request):
     #     inactive_users = UserProfile.objects.filter(Q(status=4))
     #     done_users = UserProfile.objects.filter(Q(status=3))
 
-    pdi_meetings = PdiMeeting.objects.all()
-    # users = Users.objects.all()
-    # team = Person.objects.all()
+    pdi_meetings_qty = len(PdiMeeting.objects.all())
+    one_on_ones_qty = len(OneOnOneMeeting.objects.all())
+    followers_qty = len(UserProfile.objects.filter(creator__user=request.user))
+    plans_qty = len(PdiPlan.objects.all())
+    actionplans_qty = len(ActionPlan.objects.all())
     
     context = get_next_events(user=request.user)
 
     context['pdi_meetings_bar_chart_data'] = pdi_meetings_bar_chart_data
     context['status_bar_chart_data'] = status_bar_chart_data
-    context['occupation_pie_chart_data'] = occupation_pie_chart_data
-    context['projecthistory_timeline_chart_data'] = projecthistory_timeline_chart_data
+    context['occupation_pie_chart_data'] = occupation_pie_chart_data 
+    context['pdi_completed_bar_chart_data'] = pdi_completed_bar_chart_data
+    # context['projecthistory_timeline_chart_data'] = projecthistory_timeline_chart_data
     context['occupations'] = occupations
     context['selected_occupation'] = selected_occupation
     #context['users_qty'] = (len(active_users) + len(inactive_users) + len(done_users))
@@ -181,6 +222,11 @@ def dashboard(request):
     #context['inactive_users'] = len(inactive_users)
     #context['done_users'] = len(done_users)
     context['users'] = len(users)
+    context['pdi_meetings_qty'] = pdi_meetings_qty
+    context['one_on_ones_qty' ] = one_on_ones_qty
+    context['followers_qty'   ] = followers_qty
+    context['plans_qty'       ] = plans_qty
+    context['actionplans_qty' ] = actionplans_qty
     #context['team'] = len(team)
     context['pdi_meetings'] = pdi_meetings
      

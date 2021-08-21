@@ -1,3 +1,4 @@
+from django.forms import widgets
 from core.models import ActionPlan, MeetingEvaluation, OneOnOneMeeting, PdiMeeting, PdiPlan
 from django import forms
 
@@ -6,13 +7,14 @@ class OneOnOneMeetingForm(forms.ModelForm):
         model = OneOnOneMeeting
         verbose_name = 'Formulário reunião 1:1'
         exclude = ['leader','follower']
+        widgets = {'next_meeting_date': widgets.DateInput({'type':'date'})}
 
 
 class PdiMeetingForm(forms.ModelForm):
     class Meta:
         model = PdiMeeting
         verbose_name = 'Formulário reunião PDI'
-        exclude = ['leader','follower']
+        exclude = ['leader','follower','next_meeting']
 
 class PdiPlanForm(forms.ModelForm):
     class Meta:
@@ -26,7 +28,6 @@ class ActionPlanForm(forms.ModelForm):
         verbose_name = 'Formulário Plano de Ação'
         exclude = []
 
-
 class ActionPlanStatusForm(forms.ModelForm):
     class Meta:
         model = ActionPlan
@@ -34,10 +35,14 @@ class ActionPlanStatusForm(forms.ModelForm):
         fields = ['id','status']
 
         
-ActionPlanStatusFormset = forms.inlineformset_factory(PdiPlan, ActionPlan,fields = ['status'], can_delete=False, extra=0)
+ActionPlanStatusFormset = forms.inlineformset_factory(PdiPlan, ActionPlan,fields = ['status'], can_delete=False, extra=0, 
+        widgets = {'due_date': widgets.DateInput({'type':'date'})}
+)
 
 # NESTED form for the PDI and its plan actions
-ActionPlanFormset = forms.inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=True, extra=0, min_num=3, max_num=5)
+ActionPlanFormset = forms.inlineformset_factory(PdiPlan, ActionPlan, exclude=(), can_delete=True, extra=0, min_num=3, max_num=5,
+        widgets = {'due_date': widgets.DateInput({'type':'date'})}
+)
 class BasePdiPlanFormset(forms.BaseInlineFormSet):
     
     def add_fields(self, form, index) -> None:
