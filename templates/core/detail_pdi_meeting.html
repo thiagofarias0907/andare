@@ -134,13 +134,7 @@
                     </div>
                     <div class="col-11">
                       <div class="row  col-12 plan-type">
-                        {% if plan.0.plan_type.value == 1  %}
-                          DESENVOLVER
-                        {% elif plan.0.plan_type.value == 2 %}
-                          APRIMORAR
-                        {% else %}
-                          REDUZIR
-                        {% endif %}
+                        {{plan.0.get_plan_type_display}}
                       </div>
                       <div class="row col-12 plan-title">
                         {{ plan.0.description }}

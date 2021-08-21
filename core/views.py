@@ -17,8 +17,8 @@ from .forms import ActionPlanStatusForm, MeetingEvaluationForm, OneOnOneMeetingF
 def get_next_events(user):
     events = {}
     user   = UserProfile.objects.get(user=user)
-    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user).filter(next_meeting_date__gt = datetime.now())
-    pdi_meetings = PdiMeeting.objects.filter(Q(leader=user)| Q(follower=user)).filter(next_meeting__gt = datetime.today() )
+    oneonone_meetings = OneOnOneMeeting.objects.filter(leader=user).filter(next_meeting_date__gt = datetime.now())[:5]
+    pdi_meetings = PdiMeeting.objects.filter(Q(leader=user)| Q(follower=user)).filter(next_meeting__gt = datetime.today() )[:5]
     events['next_oneonone_meetings'] = oneonone_meetings
     events['next_pdi_meetings'] = pdi_meetings
     return events
